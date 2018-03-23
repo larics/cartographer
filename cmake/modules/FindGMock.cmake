@@ -71,3 +71,4 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GMock DEFAULT_MSG GMOCK_LIBRARIES
                                   GMOCK_INCLUDE_DIRS)
 
+set(GMOCK_FOUND ${GMOCK_FOUND} CACHE INTERNAL "")
