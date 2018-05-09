@@ -56,6 +56,8 @@ class CeresPose {
   std::shared_ptr<Data> data_;
 };
 
+CeresPose::Data FromPose(const transform::Rigid3d& pose);
+
 }  // namespace pose_graph
 }  // namespace mapping
 }  // namespace cartographer
