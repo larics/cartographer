@@ -24,7 +24,7 @@ CeresPose::Data FromPose(const transform::Rigid3d& pose) {
   return CeresPose::Data{ {{pose.translation().x(), pose.translation().y(),
                                pose.translation().z()}},
                           {{pose.rotation().w(), pose.rotation().x(),
-                               pose.rotation().rotation().y(), pose.rotation().rotation.z()}}};
+                               pose.rotation().y(), pose.rotation().z()}}};
 }
 
 CeresPose::CeresPose(
