@@ -26,6 +26,14 @@
 #include "cartographer/mapping/proto/submap_visualization.pb.h"
 #include "cartographer/mapping/value_conversion_tables.h"
 
+namespace frontier {
+class Detector;
+}
+
+namespace cartographer_ros {
+class MapBuilderBridge;
+}
+
 namespace cartographer {
 namespace mapping {
 
@@ -102,6 +110,9 @@ class Grid2D : public GridInterface {
 
   // Converts a 'cell_index' into an index into 'cells_'.
   int ToFlatIndex(const Eigen::Array2i& cell_index) const;
+
+  friend class cartographer_ros::MapBuilderBridge;
+  friend class frontier::Detector;
 
  private:
   MapLimits limits_;
