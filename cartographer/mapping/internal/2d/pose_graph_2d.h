@@ -157,6 +157,11 @@ class PoseGraph2D : public PoseGraph {
 
   static void RegisterMetrics(metrics::FamilyFactory* family_factory);
 
+  int optimizations_performed() const {
+    absl::MutexLock locker(&mutex_);
+    return optimizations_performed_;
+  }
+
  private:
   MapById<SubmapId, PoseGraphInterface::SubmapData> GetSubmapDataUnderLock()
       const EXCLUSIVE_LOCKS_REQUIRED(mutex_);
@@ -265,6 +270,8 @@ class PoseGraph2D : public PoseGraph {
   PoseGraphData data_ GUARDED_BY(mutex_);
 
   ValueConversionTables conversion_tables_;
+
+  int optimizations_performed_;
 
   // Allows querying and manipulating the pose graph by the 'trimmers_'. The
   // 'mutex_' of the pose graph is held while this class is used.

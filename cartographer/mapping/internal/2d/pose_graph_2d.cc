@@ -50,7 +50,8 @@ PoseGraph2D::PoseGraph2D(
     : options_(options),
       optimization_problem_(std::move(optimization_problem)),
       constraint_builder_(options_.constraint_builder_options(), thread_pool),
-      thread_pool_(thread_pool) {
+      thread_pool_(thread_pool),
+      optimizations_performed_(0) {
   if (options.has_overlapping_submaps_trimmer_2d()) {
     const auto& trimmer_options = options.overlapping_submaps_trimmer_2d();
     AddTrimmer(absl::make_unique<OverlappingSubmapsTrimmer2D>(
@@ -839,6 +840,7 @@ void PoseGraph2D::RunOptimization() {
     data_.landmark_nodes[landmark.first].global_landmark_pose = landmark.second;
   }
   data_.global_submap_poses_2d = submap_data;
+  optimizations_performed_++;
 }
 
 bool PoseGraph2D::CanAddWorkItemModifying(int trajectory_id) {
