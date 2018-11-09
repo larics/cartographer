@@ -41,7 +41,7 @@ if (${BUILD_GRPC})
 endif()
 
 include(FindPkgConfig)
-PKG_SEARCH_MODULE(CAIRO REQUIRED cairo>=1.12.16)
+#PKG_SEARCH_MODULE(CAIRO REQUIRED cairo>=1.12.16)
 
 # Only build the documentation if we can find Sphinx.
 find_package(Sphinx)
@@ -165,6 +165,8 @@ if(${BUILD_GRPC})
 endif()
 set(INSTALL_GENERATED_HDRS ${ALL_PROTO_HDRS} ${ALL_GRPC_SERVICE_HDRS})
 
+link_directories("C:/opt/rosdeps/x64/lib")
+
 add_library(${PROJECT_NAME} ${ALL_LIBRARY_HDRS} ${ALL_LIBRARY_SRCS})
 
 configure_file(
@@ -226,7 +228,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
   ${PROTOBUF_INCLUDE_DIR})
 # TODO(hrapp): This should not explicitly list pthread and use
 # PROTOBUF_LIBRARIES, but that failed on first try.
-target_link_libraries(${PROJECT_NAME} PUBLIC ${PROTOBUF_LIBRARY} pthread standalone_absl)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${PROTOBUF_LIBRARY} standalone_absl)
 if(${BUILD_GRPC})
   target_link_libraries(${PROJECT_NAME} PUBLIC grpc++)
   target_link_libraries(${PROJECT_NAME} PUBLIC async_grpc)
@@ -240,6 +242,7 @@ set(TARGET_COMPILE_FLAGS "${TARGET_COMPILE_FLAGS} ${GOOG_CXX_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES
   COMPILE_FLAGS ${TARGET_COMPILE_FLAGS})
 
+#[[
 set(TEST_LIB
   cartographer_test_library
 )
@@ -267,6 +270,7 @@ foreach(ABS_FIL ${ALL_TESTS})
   endif()
   target_link_libraries("${TEST_TARGET_NAME}" PUBLIC ${TEST_LIB})
 endforeach()
+]]#
 
 # Add the binary directory first, so that port.h is included after it has
 # been generated.
