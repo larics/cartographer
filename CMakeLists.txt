@@ -39,6 +39,7 @@ find_package(Ceres REQUIRED COMPONENTS SuiteSparse)
 find_package(Eigen3 REQUIRED)
 find_package(LuaGoogle REQUIRED)
 # On Windows, Protobuf is incorrectly found by the bundled CMake module. Prefer native CMake config, if possible.
+set(protobuf_MODULE_COMPATIBLE TRUE CACHE INTERNAL "")
 find_package(Protobuf 3.0.0 CONFIG)
 if (NOT Protobuf_FOUND)
   find_package(Protobuf 3.0.0 REQUIRED)
