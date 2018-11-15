@@ -70,15 +70,6 @@ if(NOT TARGET standalone_absl)
     CMAKE_CACHE_ARGS "-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON;-DBUILD_TESTING:BOOL=OFF;-DCMAKE_BUILD_TYPE:STRING=Release"
     BUILD_BYPRODUCTS "${ABSEIL_LIBRARY_PATH};${ABSEIL_DEPENDENT_LIBRARIES}"
   )
-  if(MSVC)
-    # /wd4005  macro-redefinition
-    # /wd4068  unknown pragma
-    # /wd4244  conversion from 'type1' to 'type2'
-    # /wd4267  conversion from 'size_t' to 'type2'
-    # /wd4800  force value to bool 'true' or 'false' (performance warning)
-    add_compile_options(/wd4005 /wd4068 /wd4244 /wd4267 /wd4800)
-    add_definitions(/DNOMINMAX /DWIN32_LEAN_AND_MEAN=1 /D_CRT_SECURE_NO_WARNINGS)
-  endif()
   add_library(standalone_absl STATIC IMPORTED GLOBAL)
   set_target_properties(standalone_absl
     PROPERTIES INTERFACE_INCLUDE_DIRECTORIES
@@ -90,6 +81,15 @@ if(NOT TARGET standalone_absl)
     INTERFACE_LINK_LIBRARIES
     "${ABSEIL_DEPENDENT_LIBRARIES}"
   )
+  if(MSVC)
+    # /wd4005  macro-redefinition
+    # /wd4068  unknown pragma
+    # /wd4244  conversion from 'type1' to 'type2'
+    # /wd4267  conversion from 'size_t' to 'type2'
+    # /wd4800  force value to bool 'true' or 'false' (performance warning)
+    target_compile_options(standalone_absl INTERFACE /wd4005 /wd4068 /wd4244 /wd4267 /wd4800)
+    target_compile_definitions(standalone_absl INTERFACE -DNOMINMAX -DWIN32_LEAN_AND_MEAN=1 -D_CRT_SECURE_NO_WARNINGS)
+  endif()
   add_dependencies(standalone_absl ${ABSEIL_PROJECT_NAME})
   unset(prefix)
   unset(suffix)
