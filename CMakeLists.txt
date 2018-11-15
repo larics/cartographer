@@ -51,6 +51,8 @@ endif()
 include(FindPkgConfig)
 if (NOT WIN32)
   PKG_SEARCH_MODULE(CAIRO REQUIRED cairo>=1.12.16)
+else()
+  find_library(CAIRO_LIBRARIES cairo)
 endif()
 
 # Only build the documentation if we can find Sphinx.
