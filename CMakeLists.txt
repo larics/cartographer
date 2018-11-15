@@ -34,7 +34,11 @@ find_package(Boost REQUIRED COMPONENTS iostreams)
 find_package(Ceres REQUIRED COMPONENTS SuiteSparse)
 find_package(Eigen3 REQUIRED)
 find_package(LuaGoogle REQUIRED)
-find_package(Protobuf 3.0.0 REQUIRED)
+# On Windows, Protobuf is incorrectly found by the bundled CMake module. Prefer native CMake config, if possible.
+find_package(Protobuf 3.0.0 CONFIG)
+if (NOT Protobuf_FOUND)
+  find_package(Protobuf 3.0.0 REQUIRED)
+endif()
 
 if (${BUILD_GRPC})
   find_package(async_grpc REQUIRED)
@@ -219,6 +223,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
 # We expect find_package(Ceres) to have located these for us.
 target_link_libraries(${PROJECT_NAME} PUBLIC glog)
 target_link_libraries(${PROJECT_NAME} PUBLIC gflags)
+# Needed to fix conflict with MSVC's error macro.
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DGLOG_NO_ABBREVIATED_SEVERITIES)
 
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
   "${CAIRO_INCLUDE_DIRS}")
