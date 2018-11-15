@@ -235,9 +235,13 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${GLOG_LIBRARY})
 target_link_libraries(${PROJECT_NAME} PUBLIC gflags)
-# Needed to fix conflict with MSVC's error macro.
 if(WIN32)
+  # Needed to fix conflict with MSVC's error macro.
   target_compile_definitions(${PROJECT_NAME} PUBLIC -DGLOG_NO_ABBREVIATED_SEVERITIES)
+endif()
+if(MSVC)
+  # Needed for VS 2017 5.8
+  target_compile_definitions(${PROJECT_NAME} PUBLIC -D_ENABLE_EXTENDED_ALIGNED_STORAGE)
 endif()
 
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
