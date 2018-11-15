@@ -265,6 +265,10 @@ set(TEST_LIB
 add_library(${TEST_LIB} ${TEST_LIBRARY_HDRS} ${TEST_LIBRARY_SRCS})
 target_include_directories(${TEST_LIB} SYSTEM PRIVATE
   "${GMOCK_INCLUDE_DIRS}")
+# Needed for dynamically linked GTest on Windows.
+if (WIN32)
+  target_compile_definitions(${TEST_LIB} PUBLIC -DGTEST_LINKED_AS_SHARED_LIBRARY)
+endif()
 target_link_libraries(${TEST_LIB} PUBLIC ${GMOCK_LIBRARY})
 target_link_libraries(${TEST_LIB} PUBLIC ${PROJECT_NAME})
 set_target_properties(${TEST_LIB} PROPERTIES
