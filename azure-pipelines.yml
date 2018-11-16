@@ -16,10 +16,12 @@ jobs:
 
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      call "C:\opt\ros\melodic\x64\env.bat" catkin_init_workspace
-      call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --use-ninja --install --source .
+      call "C:\opt\ros\melodic\x64\setup.bat"
+      catkin_make_isolated --use-ninja --install --source .
     displayName: Build repo
 
   - script: |
-      call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --use-ninja --make-args test --source .
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      call "C:\opt\ros\melodic\x64\setup.bat"
+      catkin_make_isolated --use-ninja --source . --make-args test
     displayName: Run tests
