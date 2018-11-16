@@ -16,11 +16,12 @@ jobs:
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       call "C:\opt\ros\melodic\x64\setup.bat"
-      catkin_make_isolated --install --source .
+      robocopy "." ".\src\cartographer" /E /MOVE /XD "src"
+      catkin_make_isolated --install
     displayName: Build repo
 
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       call "C:\opt\ros\melodic\x64\setup.bat"
-      catkin_make_isolated --source . --make-args test
+      catkin_make_isolated --make-args test
     displayName: Run tests
