@@ -1,11 +1,23 @@
-resources:
-  repositories:
-    - repository: templates
-      type: github
-      name: seanyen-msft/rosonwindows_ci
-      endpoint: larics
-
 jobs:
-- template: build.yml@templates  # Template reference
-  parameters:
-    ros_metapackage: 'ros-melodic-desktop'
+- job: Build
+  pool:
+    vmImage: 'vs2017-win2016'
+  timeoutInMinutes: 240
+  steps:
+  - script: |
+      choco sources add -n=roswin -s https://roswin.azurewebsites.net/api/v2/ --priority 1
+      choco upgrade ros-melodic-desktop -y
+      call "C:\opt\ros\melodic\x64\env.bat" rosdep install --from-paths . --ignore-src -r -y
+    env:
+      ROS_METAPACKAGE: 'ros-melodic-desktop'
+    displayName: Install prerequisites
+
+  - script: |
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      call "C:\opt\ros\melodic\x64\env.bat" catkin_init_workspace
+      call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --install --source .
+    displayName: Build repo
+
+  - script: |
+      call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --make-args test
+    displayName: Run tests
