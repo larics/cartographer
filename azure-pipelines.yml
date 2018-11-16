@@ -17,7 +17,7 @@ jobs:
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       call "C:\opt\ros\melodic\x64\setup.bat"
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src"
-      catkin_make_isolated
+      catkin_make_isolated --install
       echo "Testing using catkin_make_isolated"
       cd
       catkin_make_isolated --make-args test
