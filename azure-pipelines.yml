@@ -6,6 +6,7 @@ jobs:
   steps:
   - script: |
       choco sources add -n=roswin -s https://roswin.azurewebsites.net/api/v2/ --priority 1
+      choco install ninja -y
       choco upgrade ros-melodic-desktop -y
       call "C:\opt\ros\melodic\x64\env.bat" rosdep install --from-paths . --ignore-src -r -y
     env:
@@ -15,9 +16,9 @@ jobs:
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       call "C:\opt\ros\melodic\x64\env.bat" catkin_init_workspace
-      call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --install --source .
+      call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --use-ninja --install --source .
     displayName: Build repo
 
   - script: |
-      call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --make-args test
+      call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --use-ninja --make-args test
     displayName: Run tests
