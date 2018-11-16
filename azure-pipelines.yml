@@ -21,5 +21,5 @@ jobs:
     displayName: Build repo
 
   - script: |
-      call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --use-ninja --make-args test
+      call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --use-ninja --make-args test --source .
     displayName: Run tests
