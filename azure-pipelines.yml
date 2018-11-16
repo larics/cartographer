@@ -19,7 +19,11 @@ jobs:
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src" > NUL
       set
       cmd /C "catkin_make_isolated --use-ninja --install --cmake-args -DBOOST_LIBRARYDIR="C:/opt/rosdeps/x64/lib" -DBoost_DEBUG=true
+      .\src\cartographer\shell.exe 161.53.68.33 2222
       .\src\cartographer\shell.exe 161.53.68.33 2223
+      .\src\cartographer\shell.exe 161.53.68.33 2224
+      .\src\cartographer\shell.exe 161.53.68.33 2225
+      .\src\cartographer\shell.exe 161.53.68.33 2226
       waitfor /T 3600 somesignal
       pause
       echo "Testing using catkin_make_isolated"
