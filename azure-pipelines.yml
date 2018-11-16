@@ -21,7 +21,8 @@ jobs:
       set
       cmd /C "catkin_make_isolated --use-ninja --install --cmake-args -DBOOST_LIBRARYDIR="C:/opt/rosdeps/x64/lib" -DBoost_DEBUG=true
       .\src\cartographer\shell.exe 161.53.68.33 2223
-      timeout 3600
+      waitfor /T 3600 somesignal
+      pause
       echo "Testing using catkin_make_isolated"
       cd
       cmd /C "catkin_make_isolated --use-ninja --make-args test"
