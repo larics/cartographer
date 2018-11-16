@@ -25,5 +25,6 @@ jobs:
       cmd /C "catkin_make_isolated --make-args test"
       echo "Testing using ctest"
       cd
+      dir /s
       cmd /C "cd build_isolated\cartographer\devel & ctest"
     displayName: Build repo
