@@ -18,5 +18,10 @@ jobs:
       call "C:\opt\ros\melodic\x64\setup.bat"
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src"
       catkin_make_isolated
+      echo "Testing using catkin_make_isolated"
+      cd
       catkin_make_isolated --make-args test
+      echo "Testing using ctest"
+      cd
+      cmd /C "cd build_isolated\cartographer\devel & ctest"
     displayName: Build repo
