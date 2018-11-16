@@ -19,7 +19,7 @@ jobs:
       call "C:\opt\ros\melodic\x64\setup.bat"
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src" > NUL
       set
-      catkin_make_isolated --install --use-ninja
+      catkin_make_isolated --install --use-ninja -DBOOST_LIBRARYDIR="C:/opt/rosdeps/x64/lib"
       echo "Testing using catkin_make_isolated"
       cd
       catkin_make_isolated --use-ninja --make-args test
