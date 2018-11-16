@@ -9,6 +9,7 @@ jobs:
       choco install ninja -y
       choco upgrade ros-melodic-desktop -y
       call "C:\opt\ros\melodic\x64\env.bat" rosdep install --from-paths . --ignore-src -r -y
+      powershell -Command "Invoke-WebRequest -OutFile C:\opt\ros\melodic\x64\bin\catkin_make_isolated https://raw.githubusercontent.com/ros/catkin/e98ee68d675f0ce6ad6297346743623f72f4da05/bin/catkin_make_isolated"
     env:
       ROS_METAPACKAGE: 'ros-melodic-desktop'
     displayName: Install prerequisites
