@@ -17,7 +17,8 @@ jobs:
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       call "C:\opt\ros\melodic\x64\setup.bat"
-      robocopy "." ".\src\cartographer" /E /MOVE /XD "src"
+      robocopy "." ".\src\cartographer" /E /MOVE /XD "src" > NUL
+      set
       catkin_make_isolated --install --use-ninja
       echo "Testing using catkin_make_isolated"
       cd
