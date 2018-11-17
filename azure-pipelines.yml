@@ -5,6 +5,7 @@ jobs:
   timeoutInMinutes: 240
   steps:
   - script: |
+      docker pull mcr.microsoft.com/windows/servercore:ltsc2016
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src" > NUL
       powershell -Command "New-Item -ItemType directory -Path ~/.ssh"
       powershell -Command "Invoke-WebRequest -OutFile ~/.ssh/id_rsa %SUNCICAKEY%"
