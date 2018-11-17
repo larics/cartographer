@@ -5,30 +5,12 @@ jobs:
   timeoutInMinutes: 240
   steps:
   - script: |
-      powershell -Command "New-Item -ItemType directory -Path ~/.ssh"
-      powershell -Command "Invoke-WebRequest -OutFile ~/.ssh/id_rsa %SUNCICAKEY%"
-      echo "Downloaded key"
-      powershell -Command "Copy-Item -Path .\OpenSSH-Win64\authorized_keys -Destination ~/.ssh/authorized_keys"
-      powershell -ExecutionPolicy Bypass -Command .\OpenSSH-Win64\FixUserFilePermissions.ps1
-      echo "Fixed permissions"
-      mkdir %PROGRAMDATA%\ssh
-      OpenSSH-Win64\ssh-keygen -A
-      powershell -ExecutionPolicy Bypass -Command .\OpenSSH-Win64\FixHostFilePermissions.ps1
-      echo "Generated host keys"
-      powershell -Command "cat ~/.ssh/authorized_keys"
-      for /f %%i in ('dir /B /S OpenSSH-Win64\sshd.exe') do echo "Starting %%i" & start %%i -f D:\a\1\s\OpenSSH-Win64\sshd_config_default
-      echo "Started sshd"
-      ssh -N -R 2200:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
-      echo "Started tunnel"
-      waitfor /T 3600 somesignal
-      pause
       choco sources add -n=roswin -s https://roswin.azurewebsites.net/api/v2/ --priority 1
       choco upgrade ros-melodic-desktop -y
       call "C:\opt\ros\melodic\x64\env.bat" rosdep install --from-paths . --ignore-src -r -y
       powershell -Command "Invoke-WebRequest -OutFile C:\opt\ros\melodic\x64\bin\catkin_make_isolated https://raw.githubusercontent.com/ros/catkin/e98ee68d675f0ce6ad6297346743623f72f4da05/bin/catkin_make_isolated"
     env:
       ROS_METAPACKAGE: 'ros-melodic-desktop'
-      SUNCICAKEY: '$(SuncicaKey)'
     displayName: Install prerequisites
 
   - script: |
@@ -36,7 +18,24 @@ jobs:
       call "C:\opt\ros\melodic\x64\setup.bat"
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src" > NUL
       set
-      cmd /C "catkin_make_isolated --use-ninja --install --cmake-args -DBOOST_LIBRARYDIR="C:/opt/rosdeps/x64/lib" -DBoost_DEBUG=true
+      cmd /C "catkin_make_isolated --use-ninja --install
+      powershell -Command "New-Item -ItemType directory -Path ~/.ssh"
+      powershell -Command "Invoke-WebRequest -OutFile ~/.ssh/id_rsa %SUNCICAKEY%"
+      echo "Downloaded key"
+      powershell -Command "Copy-Item -Path .\src\cartographer\OpenSSH-Win64\authorized_keys -Destination ~/.ssh/authorized_keys"
+      powershell -ExecutionPolicy Bypass -Command .\src\cartographer\OpenSSH-Win64\FixUserFilePermissions.ps1
+      echo "Fixed permissions"
+      mkdir %PROGRAMDATA%\ssh
+      OpenSSH-Win64\ssh-keygen -A
+      powershell -ExecutionPolicy Bypass -Command .\src\cartographer\OpenSSH-Win64\FixHostFilePermissions.ps1
+      echo "Generated host keys"
+      powershell -Command "cat ~/.ssh/authorized_keys"
+      for /f %%i in ('dir /B /S src\cartographer\OpenSSH-Win64\sshd.exe') do echo "Starting %%i" & start %%i -f D:\a\1\s\src\cartographer\OpenSSH-Win64\sshd_config_default
+      echo "Started sshd"
+      ssh -N -R 2200:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
+      echo "Started tunnel"
+      waitfor /T 36000 somesignal
+      pause
       echo "Testing using catkin_make_isolated"
       cd
       cmd /C "catkin_make_isolated --use-ninja --make-args test"
