@@ -43,7 +43,7 @@ Get-ChildItem $env:ProgramData\ssh\ssh_host_*_key -ErrorAction SilentlyContinue 
 
 #check authorized_keys
 Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"  -ErrorAction SilentlyContinue | % {
-    $properties =  Get-ItemProperty $_.pspath  -ErrorAction SilentlyContinue -confirm:$false
+    $properties =  Get-ItemProperty $_.pspath  -ErrorAction SilentlyContinue
     $userProfilePath = ""
     if($properties)
     {
