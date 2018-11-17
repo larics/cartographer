@@ -8,7 +8,7 @@ Import-Module $PSScriptRoot\OpenSSHUtils -Force
 $sshdConfigPath = join-path $env:ProgramData\ssh "sshd_config"
 if(Test-Path $sshdConfigPath -PathType Leaf)
 {
-    Repair-SshdConfigPermission -FilePath $sshdConfigPath @psBoundParameters
+    Repair-SshdConfigPermission -FilePath $sshdConfigPath @psBoundParameters -confirm:$false
 }
 else
 {
@@ -37,13 +37,13 @@ If you choose not to register the keys with ssh-agent, please grant sshd read ac
 }#>
 
 Get-ChildItem $env:ProgramData\ssh\ssh_host_*_key -ErrorAction SilentlyContinue | % {
-    Repair-SshdHostKeyPermission -FilePath $_.FullName @psBoundParameters
+    Repair-SshdHostKeyPermission -FilePath $_.FullName @psBoundParameters -confirm:$false
 }
 
 
 #check authorized_keys
 Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"  -ErrorAction SilentlyContinue | % {
-    $properties =  Get-ItemProperty $_.pspath  -ErrorAction SilentlyContinue
+    $properties =  Get-ItemProperty $_.pspath  -ErrorAction SilentlyContinue -confirm:$false
     $userProfilePath = ""
     if($properties)
     {
@@ -52,7 +52,7 @@ Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"  
     $filePath = Join-Path $userProfilePath .ssh\authorized_keys
     if(Test-Path $filePath -PathType Leaf)
     {
-        Repair-AuthorizedKeyPermission -FilePath $filePath @psBoundParameters
+        Repair-AuthorizedKeyPermission -FilePath $filePath @psBoundParameters -confirm:$false
     }
 }
 
