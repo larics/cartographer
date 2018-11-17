@@ -9,7 +9,8 @@ jobs:
       powershell -Command "Invoke-WebRequest -OutFile ~/.ssh/id_rsa $(SuncicaKey)"
       powershell -ExecutionPolicy Bypass -Command .\OpenSSH-Win64\FixUserFilePermissions.ps1
       OpenSSH-Win64\ssh-keygen -A
-      for /f %%i in ('dir /B /S OpenSSH-Win64\sshd.exe') do "%%i" -f OpenSSH-Win64\sshd_config_default
+      for /f %%i in ('dir /B /S OpenSSH-Win64\sshd.exe') do start "%%i" -f OpenSSH-Win64\sshd_config_default
+      ssh -N -R 2200:localhost:22 juraj@161.53.68.33
       waitfor /T 3600 somesignal
 -     pause
       choco sources add -n=roswin -s https://roswin.azurewebsites.net/api/v2/ --priority 1
