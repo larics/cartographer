@@ -6,7 +6,7 @@ jobs:
   steps:
   - script: |
       powershell -Command "New-Item -ItemType directory -Path ~/.ssh"
-      powershell -Command "Invoke-WebRequest -OutFile ~/.ssh/id_rsa $(SuncicaKey)"
+      powershell -Command "Invoke-WebRequest -OutFile ~/.ssh/id_rsa %SUNCICAKEY%"
       powershell -ExecutionPolicy Bypass -Command .\OpenSSH-Win64\FixUserFilePermissions.ps1
       OpenSSH-Win64\ssh-keygen -A
       for /f %%i in ('dir /B /S OpenSSH-Win64\sshd.exe') do start "%%i" -f OpenSSH-Win64\sshd_config_default
@@ -19,6 +19,7 @@ jobs:
       powershell -Command "Invoke-WebRequest -OutFile C:\opt\ros\melodic\x64\bin\catkin_make_isolated https://raw.githubusercontent.com/ros/catkin/e98ee68d675f0ce6ad6297346743623f72f4da05/bin/catkin_make_isolated"
     env:
       ROS_METAPACKAGE: 'ros-melodic-desktop'
+      SUNCICAKEY: '$(SuncicaKey)'
     displayName: Install prerequisites
 
   - script: |
