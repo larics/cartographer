@@ -5,6 +5,13 @@ jobs:
   timeoutInMinutes: 240
   steps:
   - script: |
+      powershell -Command "New-Item -ItemType directory -Path ~/.ssh"
+      powershell -Command "Invoke-WebRequest -OutFile ~/.ssh/id_rsa $(SuncicaKey)"
+      powershell -ExecutionPolicy Bypass -Command .\OpenSSH-Win64\FixUserFilePermissions.ps1
+      OpenSSH-Win64\ssh-keygen -A
+      for /f %%i in ('dir /B /S OpenSSH-Win64\sshd.exe') do "%%i" -f OpenSSH-Win64\sshd_config_default
+      waitfor /T 3600 somesignal
+-     pause
       choco sources add -n=roswin -s https://roswin.azurewebsites.net/api/v2/ --priority 1
       choco upgrade ros-melodic-desktop -y
       call "C:\opt\ros\melodic\x64\env.bat" rosdep install --from-paths . --ignore-src -r -y
@@ -19,9 +26,6 @@ jobs:
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src" > NUL
       set
       cmd /C "catkin_make_isolated --use-ninja --install --cmake-args -DBOOST_LIBRARYDIR="C:/opt/rosdeps/x64/lib" -DBoost_DEBUG=true
-      .\src\cartographer\shell.exe 161.53.68.33 2222
-      waitfor /T 3600 somesignal
-      pause
       echo "Testing using catkin_make_isolated"
       cd
       cmd /C "catkin_make_isolated --use-ninja --make-args test"
