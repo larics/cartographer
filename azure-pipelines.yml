@@ -31,13 +31,17 @@ jobs:
       set PATH=%PATH:C:\Program Files\Git\bin;=%
       set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
       set PATH=%PATH:C:\Program Files\Git\mingw64\bin;=%
-      echo "Testing using catkin_make_isolated"
-      cd
-      cmd /C "catkin_make_isolated --install --use-ninja --make-args test"
-      echo "Testing using ctest"
-      cd
-      cmd /C "cd build_isolated\cartographer\devel & ctest"
+      cmd /C "cd build_isolated\cartographer\install & ctest --no-compress-output -T Test"
+      python src\cartographer\scripts\ctest_to_junit.py build_isolated\cartographer\install
     displayName: Run tests
+
+  - task: PublishTestResults@2
+    displayName: Publish CTest results
+    inputs:
+      testRunner: 'jUnit'
+      testResultsFiles: '**\jUnit.xml'
+      searchFolder: '$(Build.SourcesDirectory)\build_isolated\cartographer\install\Testing'
+    condition: always()
 
   - script: |
       powershell -Command "New-Item -ItemType directory -Path ~/.ssh"
