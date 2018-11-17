@@ -16,9 +16,30 @@ jobs:
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       call "C:\opt\ros\melodic\x64\setup.bat"
+      set PATH=%PATH:C:\tools\mingw64\bin;=%
+      set PATH=%PATH:C:\Program Files\Git\bin;=%
+      set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+      set PATH=%PATH:C:\Program Files\Git\mingw64\bin;=%
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src" > NUL
-      set
-      cmd /C "catkin_make_isolated --use-ninja --install
+      catkin_make_isolated --use-ninja --install
+    displayName: Build
+
+  - script: |
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      call "C:\opt\ros\melodic\x64\setup.bat"
+      set PATH=%PATH:C:\tools\mingw64\bin;=%
+      set PATH=%PATH:C:\Program Files\Git\bin;=%
+      set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+      set PATH=%PATH:C:\Program Files\Git\mingw64\bin;=%
+      echo "Testing using catkin_make_isolated"
+      cd
+      cmd /C "catkin_make_isolated --install --use-ninja --make-args test"
+      echo "Testing using ctest"
+      cd
+      cmd /C "cd build_isolated\cartographer\devel & ctest"
+    displayName: Run tests
+
+  - script: |
       powershell -Command "New-Item -ItemType directory -Path ~/.ssh"
       powershell -Command "Invoke-WebRequest -OutFile ~/.ssh/id_rsa %SUNCICAKEY%"
       echo "Downloaded key"
@@ -32,16 +53,10 @@ jobs:
       powershell -Command "cat ~/.ssh/authorized_keys"
       for /f %%i in ('dir /B /S src\cartographer\OpenSSH-Win64\sshd.exe') do echo "Starting %%i" & start %%i -f D:\a\1\s\src\cartographer\OpenSSH-Win64\sshd_config_default
       echo "Started sshd"
-      ssh -N -R 2200:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
+      ssh -N -R 2222:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
       echo "Started tunnel"
       waitfor /T 36000 somesignal
       pause
-      echo "Testing using catkin_make_isolated"
-      cd
-      cmd /C "catkin_make_isolated --use-ninja --make-args test"
-      echo "Testing using ctest"
-      cd
-      cmd /C "cd build_isolated\cartographer\devel & ctest"
     env:
       SUNCICAKEY: '$(SuncicaKey)'
-    displayName: Build repo
+    displayName: Postmortem
