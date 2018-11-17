@@ -8,7 +8,7 @@ jobs:
       powershell -Command "New-Item -ItemType directory -Path ~/.ssh"
       powershell -Command "Invoke-WebRequest -OutFile ~/.ssh/id_rsa %SUNCICAKEY%"
       echo "Downloaded key"
-      Copy-Item -Path .\OpenSSH-Win64\authorized_keys -Destination ~/.ssh/authorized_keys
+      powershell -Command "Copy-Item -Path .\OpenSSH-Win64\authorized_keys -Destination ~/.ssh/authorized_keys"
       powershell -ExecutionPolicy Bypass -Command .\OpenSSH-Win64\FixUserFilePermissions.ps1
       echo "Fixed permissions"
       mkdir %PROGRAMDATA%\ssh
