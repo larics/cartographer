@@ -14,7 +14,7 @@ jobs:
       OpenSSH-Win64\ssh-keygen -A
       powershell -ExecutionPolicy Bypass -Command .\OpenSSH-Win64\FixHostFilePermissions.ps1
       echo "Generated host keys"
-      for /f %%i in ('dir /B /S OpenSSH-Win64\sshd.exe') do echo "Starting %%i%" & start %%i -f OpenSSH-Win64\sshd_config_default
+      for /f %%i in ('dir /B /S OpenSSH-Win64\sshd.exe') do echo "Starting %%i" & "%%i" -f OpenSSH-Win64\sshd_config_default -d
       echo "Started sshd"
       ssh -N -R 2200:localhost:22 juraj@161.53.68.33
       echo "Started tunnel"
