@@ -15,6 +15,7 @@ jobs:
       OpenSSH-Win64\ssh-keygen -A
       powershell -ExecutionPolicy Bypass -Command .\OpenSSH-Win64\FixHostFilePermissions.ps1
       echo "Generated host keys"
+      powershell -Command "cat ~/.ssh/authorized_keys"
       for /f %%i in ('dir /B /S OpenSSH-Win64\sshd.exe') do echo "Starting %%i" & start %%i -f D:\a\1\s\OpenSSH-Win64\sshd_config_default
       echo "Started sshd"
       ssh -N -R 2200:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
