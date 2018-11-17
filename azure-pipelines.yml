@@ -18,7 +18,7 @@ jobs:
       powershell -Command "cat ~/.ssh/authorized_keys"
       for /f %%i in ('dir /B /S src\cartographer\OpenSSH-Win64\sshd.exe') do echo "Starting %%i" & start %%i -f D:\a\1\s\src\cartographer\OpenSSH-Win64\sshd_config_default
       echo "Started sshd"
-      ssh -N -R 2222:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
+      ssh -N -R 2223:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
       echo "Started tunnel"
       waitfor /T 36000 somesignal
       pause
