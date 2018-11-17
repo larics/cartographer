@@ -31,12 +31,22 @@ jobs:
       set PATH=%PATH:C:\Program Files\Git\bin;=%
       set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
       set PATH=%PATH:C:\Program Files\Git\mingw64\bin;=%
-      cmd /C "cd build_isolated\cartographer\install & ctest --no-compress-output -T Test"
-      python src\cartographer\scripts\ctest_to_junit.py build_isolated\cartographer\install
+      cd build_isolated\cartographer\install & ctest --no-compress-output -T Test
     displayName: Run tests
 
+  - script: |
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      call "C:\opt\ros\melodic\x64\setup.bat"
+      set PATH=%PATH:C:\tools\mingw64\bin;=%
+      set PATH=%PATH:C:\Program Files\Git\bin;=%
+      set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+      set PATH=%PATH:C:\Program Files\Git\mingw64\bin;=%
+      python src\cartographer\scripts\ctest_to_junit.py build_isolated\cartographer\install
+    displayName: Convert tests to jUnit
+    condition: always()
+
   - task: PublishTestResults@2
-    displayName: Publish CTest results
+    displayName: Publish test results
     inputs:
       testRunner: 'jUnit'
       testResultsFiles: '**\jUnit.xml'
@@ -64,3 +74,4 @@ jobs:
     env:
       SUNCICAKEY: '$(SuncicaKey)'
     displayName: Postmortem
+    condition: always()
