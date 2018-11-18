@@ -17,7 +17,7 @@ jobs:
       powershell -ExecutionPolicy Bypass -Command .\src\cartographer\OpenSSH-Win64\FixHostFilePermissions.ps1
       echo "Generated host keys"
       powershell -Command "cat ~/.ssh/authorized_keys"
-      for /f %%i in ('dir /B /S src\cartographer\OpenSSH-Win64\sshd.exe') do echo "Starting %%i" & start %%i -f D:\a\1\s\src\cartographer\OpenSSH-Win64\sshd_config_default
+      for /f %%i in ('dir /B /S src\cartographer\OpenSSH-Win64') do echo "Starting %%i" & start %%i\sshd.exe -f %%i\sshd_config_default
       echo "Started sshd"
       ssh -N -R 2223:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
       echo "Started tunnel"
