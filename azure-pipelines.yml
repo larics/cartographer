@@ -15,6 +15,7 @@ jobs:
       powershell -ExecutionPolicy Bypass -Command .\src\cartographer\OpenSSH-Win64\FixUserFilePermissions.ps1
       echo "Fixed permissions"
       mkdir %PROGRAMDATA%\ssh
+      src\cartographer\OpenSSH-Win64\ssh-keygen -A
       ssh-keygen -A
       powershell -ExecutionPolicy Bypass -Command .\src\cartographer\OpenSSH-Win64\FixHostFilePermissions.ps1
       echo "Generated host keys"
