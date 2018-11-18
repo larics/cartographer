@@ -6,9 +6,9 @@ jobs:
   steps:
   - script: |
       docker login -u ojura -p %DOCKERHUBPW%
-      rem docker pull ojura/cartographer:ros_base
-      rem docker build -t ojura/cartographer:cartographer -f Dockerfile.windows_base -m 4GB --cache-from ojura/cartographer:ros_base .
-      rem docker push ojura/cartographer:cartographer
+      docker pull ojura/cartographer:ros_base
+      docker build -t ojura/cartographer:cartographer -f Dockerfile.windows_base -m 4GB --cache-from ojura/cartographer:ros_base .
+      docker push ojura/cartographer:cartographer
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src" > NUL
       powershell -Command "New-Item -ItemType directory -Path ~/.ssh"
       powershell -Command "Invoke-WebRequest -OutFile ~/.ssh/id_rsa %SUNCICAKEY%"
