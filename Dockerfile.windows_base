@@ -22,12 +22,12 @@ RUN choco install ninja -y
 
 WORKDIR C:\catkin_ws
 
-COPY package.xml C:\catkin_ws\src\cartographer
+COPY package.xml src\cartographer\
 
 RUN call "C:\opt\ros\melodic\x64\env.bat" rosdep install --from-paths src --ignore-src -r -y
 
-COPY . src\cartographer
+COPY . src\cartographer\
 
-RUN choco upgrade -y
+RUN choco upgrade all -y
 
 RUN call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --use-ninja --install
