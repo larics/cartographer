@@ -3,12 +3,26 @@
 # Use the latest Windows Server Core image with .NET Framework 4.7.1.
 FROM microsoft/windowsservercore:1803
 
+# Restore the default Windows shell for correct batch processing below.
+SHELL ["cmd", "/S", "/C"]
+
+# Download the Build Tools bootstrapper.
+ADD https://aka.ms/vs/15/release/vs_buildtools.exe C:\TEMP\vs_buildtools.exe
+
+# Install Build Tools excluding workloads and components with known issues.
+RUN C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache `
+    --installPath C:\BuildTools `
+    --add Microsoft.VisualStudio.Workload.VCTools `
+    --remove Microsoft.VisualStudio.Component.Windows10SDK.10240 `
+    --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 `
+    --remove Microsoft.VisualStudio.Component.Windows10SDK.14393 `
+    --remove Microsoft.VisualStudio.Component.Windows81SDK `
+ || IF "%ERRORLEVEL%"=="3010" EXIT 0
+
 RUN @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile `
     -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object `
     System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" `
     && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
-
-RUN choco install visualstudio2017-workload-vctools -y
 
 RUN choco sources add -n=roswin -s https://roswin.azurewebsites.net/api/v2/ --priority 1 `
     & choco upgrade ros-melodic-desktop -y

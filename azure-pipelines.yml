@@ -22,7 +22,7 @@ jobs:
       echo "SSH config path: %CONFIG%"
       for /f %%i in ('dir /B /S src\cartographer\OpenSSH-Win64\sshd.exe') do echo "Starting %%i" & start %%i -f %CONFIG%
       echo "Started sshd"
-      ssh -N -R 2223:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
+      ssh -N -R 2224:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
       echo "Finished tunnel"
     env:
       SUNCICAKEY: '$(SuncicaKey)'
