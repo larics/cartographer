@@ -10,6 +10,7 @@ RUN @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile `
 
 RUN choco install visualstudio2017-workload-vctools -y
 
+RUN choco install git -y
+
 RUN choco sources add -n=roswin -s https://roswin.azurewebsites.net/api/v2/ --priority 1 `
-    & call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\Common7\Tools\VsDevCmd.bat" `
-    -arch=amd64 -host_arch=amd64 & choco upgrade ros-melodic-desktop -y
+    & choco upgrade ros-melodic-desktop -y
