@@ -14,3 +14,20 @@ RUN choco install git -y
 
 RUN choco sources add -n=roswin -s https://roswin.azurewebsites.net/api/v2/ --priority 1 `
     & choco upgrade ros-melodic-desktop -y
+
+ADD https://raw.githubusercontent.com/ros/catkin/e98ee68d675f0ce6ad6297346743623f72f4da05/bin/catkin_make_isolated `
+    C:\opt\ros\melodic\x64\bin\catkin_make_isolated
+
+RUN choco install ninja -y
+
+WORKDIR C:\catkin_ws
+
+COPY package.xml C:\catkin_ws\src\cartographer
+
+RUN call "C:\opt\ros\melodic\x64\env.bat" rosdep install --from-paths src --ignore-src -r -y
+
+COPY . src\cartographer
+
+RUN choco upgrade -y
+
+RUN call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --use-ninja --install
