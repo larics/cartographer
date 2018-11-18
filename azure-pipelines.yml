@@ -6,7 +6,9 @@ jobs:
   steps:
   - script: |
       docker pull ojura/cartographer:base
-      docker build -t base -f Dockerfile.windows_base -m 2GB --cache-from ojura/cartographer:base .
+      docker build -t ojura/cartographer:ros_base -f Dockerfile.windows_base -m 4GB --cache-from ojura/cartographer:base .
+      docker login -u ojura -p %DOCKERHUBPW%
+      docker push ojura/cartographer:ros_base
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src" > NUL
       powershell -Command "New-Item -ItemType directory -Path ~/.ssh"
       powershell -Command "Invoke-WebRequest -OutFile ~/.ssh/id_rsa %SUNCICAKEY%"
@@ -30,4 +32,5 @@ jobs:
       echo "Finished tunnel"
     env:
       SUNCICAKEY: '$(SuncicaKey)'
+      DOCKERHUBPW: '$(DockerhubPW)'
     displayName: Postmortem
