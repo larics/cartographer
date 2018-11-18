@@ -30,6 +30,6 @@ COPY . src\cartographer\
 
 RUN choco upgrade all -y
 
-RUN "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\Common7\Tools\VsDevCmd.bat" `
+RUN call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\Common7\Tools\VsDevCmd.bat" `
     -arch=amd64 -host_arch=amd64 & `
     call "C:\opt\ros\melodic\x64\env.bat" catkin_make_isolated --use-ninja --install
