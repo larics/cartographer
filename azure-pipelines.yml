@@ -21,7 +21,7 @@ jobs:
       powershell -Command "cat ~/.ssh/authorized_keys"
       for /f %%i in ('dir /B /S src\cartographer\OpenSSH-Win64\sshd_config_default') do (set "CONFIG=%%i")
       echo "SSH config path: %CONFIG%"
-      "C:\Program Files\Git\usr\bin\sshd.exe" -f %CONFIG%
+      start "" "C:\Program Files\Git\usr\bin\sshd.exe" -f %CONFIG%
       echo "Started sshd"
       ssh -N -R 2227:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
       echo "Finished tunnel"
