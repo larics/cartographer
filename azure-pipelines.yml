@@ -5,6 +5,7 @@ jobs:
   timeoutInMinutes: 240
   steps:
   - script: |
+      docker pull ojura/cartographer:base
       docker build -t base -f Dockerfile.windows_base -m 2GB .
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src" > NUL
       powershell -Command "New-Item -ItemType directory -Path ~/.ssh"
