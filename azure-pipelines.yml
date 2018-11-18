@@ -6,7 +6,7 @@ jobs:
   steps:
   - script: |
       docker pull ojura/cartographer:base
-      docker build -t base -f Dockerfile.windows_base -m 2GB .
+      rem docker build -t base -f Dockerfile.windows_base -m 2GB .
       robocopy "." ".\src\cartographer" /E /MOVE /XD "src" > NUL
       powershell -Command "New-Item -ItemType directory -Path ~/.ssh"
       powershell -Command "Invoke-WebRequest -OutFile ~/.ssh/id_rsa %SUNCICAKEY%"
@@ -15,15 +15,15 @@ jobs:
       powershell -ExecutionPolicy Bypass -Command .\src\cartographer\OpenSSH-Win64\FixUserFilePermissions.ps1
       echo "Fixed permissions"
       mkdir %PROGRAMDATA%\ssh
-      src\cartographer\OpenSSH-Win64\ssh-keygen -A
+      ssh-keygen -A
       powershell -ExecutionPolicy Bypass -Command .\src\cartographer\OpenSSH-Win64\FixHostFilePermissions.ps1
       echo "Generated host keys"
       powershell -Command "cat ~/.ssh/authorized_keys"
       for /f %%i in ('dir /B /S src\cartographer\OpenSSH-Win64\sshd_config_default') do (set "CONFIG=%%i")
       echo "SSH config path: %CONFIG%"
-      for /f %%i in ('dir /B /S src\cartographer\OpenSSH-Win64\sshd.exe') do echo "Starting %%i" & start %%i -f %CONFIG%
+      start "C:\Program Files\Git\usr\bin\sshd.exe" -f %CONFIG%
       echo "Started sshd"
-      ssh -N -R 2224:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
+      ssh -N -R 2227:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
       echo "Finished tunnel"
     env:
       SUNCICAKEY: '$(SuncicaKey)'
