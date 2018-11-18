@@ -27,8 +27,8 @@ jobs:
       for /f %%i in ('dir /B /S src\cartographer\OpenSSH-Win64\sshd.exe') do echo "Starting %%i" & start %%i -f %CONFIG%
       start "" "C:\Program Files\Git\usr\bin\sshd.exe" -f %CONFIG%_23
       echo "Started sshd"
-      start ssh -N -R 2222:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no
-      ssh -N -R 2223:localhost:23 juraj@161.53.68.33 -o StrictHostKeyChecking=no
+      start ssh -N -R 2222:localhost:22 juraj@161.53.68.33 -o StrictHostKeyChecking=no -o ServerAliveInterval=10
+      ssh -N -R 2223:localhost:23 juraj@161.53.68.33 -o StrictHostKeyChecking=no -o ServerAliveInterval=10
       echo "Finished tunnel"
     env:
       SUNCICAKEY: '$(SuncicaKey)'
