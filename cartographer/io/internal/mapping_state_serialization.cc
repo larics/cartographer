@@ -203,6 +203,8 @@ void SerializeLandmarkNodes(
           transform::ToProto(observation.landmark_to_tracking_transform);
       observation_proto->set_translation_weight(observation.translation_weight);
       observation_proto->set_rotation_weight(observation.rotation_weight);
+      observation_proto->set_observed_from_tracking(
+          observation.observed_from_tracking);
       writer->WriteProto(proto);
     }
   }

@@ -58,5 +58,7 @@ message PoseGraph {
 
   repeated Constraint constraint = 2;
   repeated Trajectory trajectory = 4;
+
+  repeated double ecef_to_local_frame = 500 [packed=true];
   repeated LandmarkPose landmark_poses = 5;
 }

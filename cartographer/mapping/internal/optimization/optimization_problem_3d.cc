@@ -153,18 +153,24 @@ void AddLandmarkCostFunctions(
       CeresPose* prev_node_pose = &C_nodes->at(prev->id);
       CeresPose* next_node_pose = &C_nodes->at(next->id);
       if (!C_landmarks->count(landmark_id)) {
-        const transform::Rigid3d starting_point =
-            landmark_node.second.global_landmark_pose.has_value()
-                ? landmark_node.second.global_landmark_pose.value()
-                : GetInitialLandmarkPose(observation, prev->data, next->data,
-                                         *prev_node_pose, *next_node_pose);
+        transform::Rigid3d starting_point;
+        if (landmark_id == "fixed") {
+          starting_point = transform::Rigid3d::Identity();
+        } else {
+          starting_point =
+              landmark_node.second.global_landmark_pose.has_value()
+                  ? landmark_node.second.global_landmark_pose.value()
+                  : GetInitialLandmarkPose(observation, prev->data,
+                                           next->data, *prev_node_pose,
+                                           *next_node_pose);
+        }
         C_landmarks->emplace(
             landmark_id,
             CeresPose(starting_point, nullptr /* translation_parametrization */,
                       absl::make_unique<ceres::QuaternionParameterization>(),
                       problem));
         // Set landmark constant if it is frozen.
-        if (landmark_node.second.frozen) {
+        if (landmark_node.second.frozen || landmark_id == "fixed") {
           problem->SetParameterBlockConstant(
               C_landmarks->at(landmark_id).translation());
           problem->SetParameterBlockConstant(
@@ -174,7 +180,9 @@ void AddLandmarkCostFunctions(
       problem->AddResidualBlock(
           LandmarkCostFunction3D::CreateAutoDiffCostFunction(
               observation, prev->data, next->data),
-          new ceres::HuberLoss(huber_scale), prev_node_pose->rotation(),
+          nullptr /* loss function - chosen NOT TO USE
+                     new ceres::HuberLoss(huber_scale)  */,
+          prev_node_pose->rotation(),
           prev_node_pose->translation(), next_node_pose->rotation(),
           next_node_pose->translation(),
           C_landmarks->at(landmark_id).rotation(),
@@ -288,11 +296,13 @@ void OptimizationProblem3D::Solve(
   MapById<NodeId, CeresPose> C_nodes;
   std::map<std::string, CeresPose> C_landmarks;
   bool first_submap = true;
+  // Only fix the first submap if there are no fixed frame constraints
+  const bool have_fixed_frame_constraints = landmark_nodes.count("fixed") &&
+      landmark_nodes.at("fixed").landmark_observations.size();
   for (const auto& submap_id_data : submap_data_) {
     const bool frozen =
         frozen_trajectories.count(submap_id_data.id.trajectory_id) != 0;
-    if (first_submap) {
-      first_submap = false;
+    if (first_submap && !have_fixed_frame_constraints) {
       // Fix the first submap of the first trajectory except for allowing
       // gravity alignment.
       C_submaps.Insert(
@@ -312,6 +322,7 @@ void OptimizationProblem3D::Solve(
                     absl::make_unique<ceres::QuaternionParameterization>(),
                     &problem));
     }
+    first_submap = false;
     if (frozen) {
       problem.SetParameterBlockConstant(
           C_submaps.at(submap_id_data.id).rotation());

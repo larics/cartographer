@@ -395,6 +395,11 @@ std::map<int, int> MapBuilder::LoadState(
     pose_graph_->AddSerializedConstraints(
         FromProto(pose_graph_proto.constraint()));
   }
+  if (pose_graph_proto.ecef_to_local_frame_size() > 0) {
+    Eigen::Affine3d ecef_to_local_frame =
+        EcefToLocalFrameFromProto(pose_graph_proto);
+    pose_graph_->SetEcefToLocalFrame(ecef_to_local_frame);
+  }
   CHECK(reader->eof());
   return trajectory_remapping;
 }

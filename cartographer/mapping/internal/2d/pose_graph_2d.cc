@@ -242,7 +242,8 @@ void PoseGraph2D::AddLandmarkData(int trajectory_id,
             PoseGraphInterface::LandmarkNode::LandmarkObservation{
                 trajectory_id, landmark_data.time,
                 observation.landmark_to_tracking_transform,
-                observation.translation_weight, observation.rotation_weight});
+                observation.translation_weight, observation.rotation_weight,
+                observation.observed_from_tracking});
       }
     }
     return WorkItem::Result::kDoNotRunOptimization;

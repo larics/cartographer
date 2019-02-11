@@ -63,12 +63,18 @@ class LandmarkCostFunction3D {
         interpolated_rotation_and_translation = InterpolateNodes3D(
             prev_node_rotation, prev_node_translation, next_node_rotation,
             next_node_translation, interpolation_parameter_);
-    const std::array<T, 6> error = ScaleError(
-        ComputeUnscaledError(
-            landmark_to_tracking_transform_,
-            std::get<0>(interpolated_rotation_and_translation).data(),
-            std::get<1>(interpolated_rotation_and_translation).data(),
-            landmark_rotation, landmark_translation),
+    std::array<T, 6> error = ScaleError(
+        observed_from_tracking_
+            ? ComputeUnscaledError(
+                  landmark_to_tracking_transform_,
+                  std::get<0>(interpolated_rotation_and_translation).data(),
+                  std::get<1>(interpolated_rotation_and_translation).data(),
+                  landmark_rotation, landmark_translation)
+            : ComputeUnscaledError(
+                  landmark_to_tracking_transform_, landmark_rotation,
+                  landmark_translation,
+                  std::get<0>(interpolated_rotation_and_translation).data(),
+                  std::get<1>(interpolated_rotation_and_translation).data()),
         translation_weight_, rotation_weight_);
     std::copy(std::begin(error), std::end(error), e);
     return true;
@@ -84,12 +90,14 @@ class LandmarkCostFunction3D {
         rotation_weight_(observation.rotation_weight),
         interpolation_parameter_(
             common::ToSeconds(observation.time - prev_node.time) /
-            common::ToSeconds(next_node.time - prev_node.time)) {}
+            common::ToSeconds(next_node.time - prev_node.time)),
+        observed_from_tracking_(observation.observed_from_tracking) {}
 
   const transform::Rigid3d landmark_to_tracking_transform_;
   const double translation_weight_;
   const double rotation_weight_;
   const double interpolation_parameter_;
+  const bool observed_from_tracking_;
 };
 
 }  // namespace optimization

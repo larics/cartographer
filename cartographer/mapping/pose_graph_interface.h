@@ -17,6 +17,7 @@
 #ifndef CARTOGRAPHER_MAPPING_POSE_GRAPH_INTERFACE_H_
 #define CARTOGRAPHER_MAPPING_POSE_GRAPH_INTERFACE_H_
 
+#include <array>
 #include <chrono>
 #include <vector>
 
@@ -59,6 +60,7 @@ class PoseGraphInterface {
       transform::Rigid3d landmark_to_tracking_transform;
       double translation_weight;
       double rotation_weight;
+      bool observed_from_tracking;
     };
     std::vector<LandmarkObservation> landmark_observations;
     absl::optional<transform::Rigid3d> global_landmark_pose;
@@ -142,6 +144,9 @@ class PoseGraphInterface {
   // Returns the collection of constraints.
   virtual std::vector<Constraint> constraints() const = 0;
 
+  virtual std::map<std::string /* landmark ID */, LandmarkNode>
+  GetLandmarkNodes() const = 0;
+
   // Serializes the constraints and trajectories. If
   // 'include_unfinished_submaps' is set to 'true', unfinished submaps, i.e.
   // submaps that have not yet received all rangefinder data insertions, will
@@ -152,6 +157,17 @@ class PoseGraphInterface {
   // problem is solved.
   virtual void SetGlobalSlamOptimizationCallback(
       GlobalSlamOptimizationCallback callback) = 0;
+
+  void SetEcefToLocalFrame(const Eigen::Affine3d& ecef_to_local_frame) {
+    ecef_to_local_frame_ = ecef_to_local_frame;
+  }
+
+  absl::optional<Eigen::Affine3d> GetEcefToLocalFrame() const {
+    return ecef_to_local_frame_;
+  }
+
+ private:
+  absl::optional<Eigen::Affine3d> ecef_to_local_frame_;
 };
 
 }  // namespace mapping
