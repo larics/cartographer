@@ -157,17 +157,6 @@ class PoseGraphInterface {
   // problem is solved.
   virtual void SetGlobalSlamOptimizationCallback(
       GlobalSlamOptimizationCallback callback) = 0;
-
-  void SetEcefToLocalFrame(const Eigen::Affine3d& ecef_to_local_frame) {
-    ecef_to_local_frame_ = ecef_to_local_frame;
-  }
-
-  absl::optional<Eigen::Affine3d> GetEcefToLocalFrame() const {
-    return ecef_to_local_frame_;
-  }
-
- private:
-  absl::optional<Eigen::Affine3d> ecef_to_local_frame_;
 };
 
 }  // namespace mapping

@@ -147,9 +147,6 @@ std::vector<PoseGraph::Constraint> FromProto(
         constraint_protos);
 proto::PoseGraph::Constraint ToProto(const PoseGraph::Constraint& constraint);
 
-Eigen::Affine3d EcefToLocalFrameFromProto(
-    const proto::PoseGraph& pose_graph_proto);
-
 }  // namespace mapping
 }  // namespace cartographer
 

@@ -206,27 +206,7 @@ proto::PoseGraph PoseGraph::ToProto(bool include_unfinished_submaps) const {
     landmark_proto->set_landmark_id(id_pose.first);
     *landmark_proto->mutable_global_pose() = transform::ToProto(id_pose.second);
   }
-
-  const auto ecef_to_local = GetEcefToLocalFrame();
-  if (ecef_to_local.has_value()) {
-    const double* ecef_to_local_data = ecef_to_local.value().data();
-    for (int i = 0; i < 16; i++) {
-      proto.add_ecef_to_local_frame(ecef_to_local_data[i]);
-    }
-  }
-
   return proto;
-}
-
-Eigen::Affine3d EcefToLocalFrameFromProto(
-    const proto::PoseGraph& pose_graph_proto) {
-  CHECK_EQ(pose_graph_proto.ecef_to_local_frame_size(), 16);
-  Eigen::Affine3d ecef_to_local_frame;
-  double* const ecef_to_local_data = ecef_to_local_frame.data();
-  for (int i = 0; i < 16; i++) {
-    ecef_to_local_data[i] = pose_graph_proto.ecef_to_local_frame(i);
-  }
-  return ecef_to_local_frame;
 }
 
 }  // namespace mapping
