@@ -836,6 +836,7 @@ void PoseGraph3D::LogResidualHistograms() const {
             << rotational_residual.ToString(10);
 }
 
+std::atomic<int> number_of_pose_graph_optimizations{0};
 void PoseGraph3D::RunOptimization() {
   if (optimization_problem_->submap_data().empty()) {
     return;
@@ -849,6 +850,7 @@ void PoseGraph3D::RunOptimization() {
                                data_.landmark_nodes);
   absl::MutexLock locker(&mutex_);
 
+  number_of_pose_graph_optimizations++;
   const auto& submap_data = optimization_problem_->submap_data();
   const auto& node_data = optimization_problem_->node_data();
   for (const int trajectory_id : node_data.trajectory_ids()) {
