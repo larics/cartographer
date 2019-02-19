@@ -212,6 +212,14 @@ void MapBuilder::SerializeState(bool include_unfinished_submaps,
                     include_unfinished_submaps);
 }
 
+bool MapBuilder::SerializeStateToFile(bool include_unfinished_submaps,
+                                      const std::string& filename) {
+  io::ProtoStreamWriter writer(filename);
+  io::WritePbStream(*pose_graph_, all_trajectory_builder_options_, &writer,
+                    include_unfinished_submaps);
+  return (writer.Close());
+}
+
 std::map<int, int> MapBuilder::LoadState(
     io::ProtoStreamReaderInterface* const reader, bool load_frozen_state) {
   io::ProtoStreamDeserializer deserializer(reader);
@@ -271,7 +279,8 @@ std::map<int, int> MapBuilder::LoadState(
   // Set global poses of landmarks.
   for (const auto& landmark : pose_graph_proto.landmark_poses()) {
     pose_graph_->SetLandmarkPose(landmark.landmark_id(),
-                                 transform::ToRigid3(landmark.global_pose()));
+                                 transform::ToRigid3(landmark.global_pose()),
+                                 true);
   }
 
   MapById<SubmapId, mapping::proto::Submap> submap_id_to_submap;
@@ -391,7 +400,7 @@ std::map<int, int> MapBuilder::LoadState(
 }
 
 std::map<int, int> MapBuilder::LoadStateFromFile(
-    const std::string& state_filename) {
+    const std::string& state_filename, const bool load_frozen_state) {
   const std::string suffix = ".pbstream";
   if (state_filename.substr(
           std::max<int>(state_filename.size() - suffix.size(), 0)) != suffix) {
@@ -400,7 +409,7 @@ std::map<int, int> MapBuilder::LoadStateFromFile(
   }
   LOG(INFO) << "Loading saved state '" << state_filename << "'...";
   io::ProtoStreamReader stream(state_filename);
-  return LoadState(&stream, true);
+  return LoadState(&stream, load_frozen_state);
 }
 
 }  // namespace mapping

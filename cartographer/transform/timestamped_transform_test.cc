@@ -14,32 +14,26 @@
  * limitations under the License.
  */
 
-#ifndef CARTOGRAPHER_POSE_GRAPH_OPTIMIZER_OPTIMIZER_H_
-#define CARTOGRAPHER_POSE_GRAPH_OPTIMIZER_OPTIMIZER_H_
+#include "cartographer/transform/timestamped_transform.h"
 
-#include "cartographer/pose_graph/pose_graph_data.h"
+#include "cartographer/transform/rigid_transform_test_helpers.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
 namespace cartographer {
-namespace pose_graph {
+namespace transform {
+namespace {
 
-class Optimizer {
- public:
-  enum class SolverStatus {
-    CONVERGENCE,
-    NO_CONVERGENCE,
-    FAILURE,
-  };
+TEST(TimestampedTransformTest, ToProtoAndBack) {
+  const TimestampedTransform expected{
+      common::FromUniversal(12345678),
+      Rigid3d(Eigen::Vector3d(1., 2., 3.),
+              Eigen::Quaterniond(1., 2., 3., 4.).normalized())};
+  const TimestampedTransform actual = FromProto(ToProto(expected));
+  EXPECT_EQ(expected.time, actual.time);
+  EXPECT_THAT(actual.transform, IsNearly(expected.transform, 1e-6));
+}
 
-  Optimizer() = default;
-  virtual ~Optimizer() = default;
-
-  Optimizer(const Optimizer&) = delete;
-  Optimizer& operator=(const Optimizer&) = delete;
-
-  virtual SolverStatus Solve(PoseGraphData* data) const = 0;
-};
-
-}  // namespace pose_graph
+}  // namespace
+}  // namespace transform
 }  // namespace cartographer
-
-#endif  // CARTOGRAPHER_POSE_GRAPH_OPTIMIZER_OPTIMIZER_H_
