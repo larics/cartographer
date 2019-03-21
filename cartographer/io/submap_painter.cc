@@ -211,7 +211,11 @@ UniqueCairoSurfacePtr DrawTexture(const std::vector<char>& intensity,
       alpha_value = 255;
     }
     if (intensity_value > 0 && alpha_value == 0) {
-      intensity_value = 255;
+      if (intensity_value < 15) {
+        intensity_value = 0;
+      } else {
+        intensity_value = 255;
+      }
     }
     const uint8_t observed =
         (intensity_value == 0 && alpha_value == 0) ? 0 : 255;
