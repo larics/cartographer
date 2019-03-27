@@ -115,6 +115,7 @@ class LocalTrajectoryBuilder2D {
   absl::optional<std::chrono::steady_clock::time_point> last_wall_time_;
   absl::optional<double> last_thread_cpu_time_seconds_;
   absl::optional<common::Time> last_sensor_time_;
+  absl::optional<transform::Rigid3d> last_ground_truth_pose_;
 
   RangeDataCollator range_data_collator_;
 };

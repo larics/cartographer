@@ -62,7 +62,7 @@ LocalTrajectoryBuilder2D::TransformToGravityAlignedFrameAndFilter(
       sensor::VoxelFilter(options_.voxel_filter_size()).Filter(cropped.misses)};
 }
 
-/*std::unique_ptr<transform::Rigid2d> LocalTrajectoryBuilder2D::ScanMatch(
+std::unique_ptr<transform::Rigid2d> LocalTrajectoryBuilder2D::ScanMatch(
     const common::Time time, const transform::Rigid2d& pose_prediction,
     const sensor::PointCloud& filtered_gravity_aligned_point_cloud) {
   if (active_submaps_.submaps().empty()) {
@@ -99,7 +99,7 @@ LocalTrajectoryBuilder2D::TransformToGravityAlignedFrameAndFilter(
     kScanMatcherResidualAngleMetric->Observe(residual_angle);
   }
   return pose_observation;
-}*/
+}
 
 std::unique_ptr<LocalTrajectoryBuilder2D::MatchingResult>
 LocalTrajectoryBuilder2D::AddRangeData(
@@ -219,9 +219,15 @@ LocalTrajectoryBuilder2D::AddAccumulatedRangeData(
     return nullptr;
   }
 
+  if (!last_ground_truth_pose_.has_value()) {
+    return nullptr;
+  }
+
   // Computes a gravity aligned pose prediction.
   const transform::Rigid3d non_gravity_aligned_pose_prediction =
-      extrapolator_->ExtrapolatePose(time);
+      last_ground_truth_pose_.value();
+      //extrapolator_->ExtrapolatePose(time);
+
   const transform::Rigid2d pose_prediction = transform::Project2D(
       non_gravity_aligned_pose_prediction * gravity_alignment.inverse());
 
@@ -233,16 +239,15 @@ LocalTrajectoryBuilder2D::AddAccumulatedRangeData(
   }
 
   // local map frame <- gravity-aligned frame
-  std::unique_ptr<transform::Rigid2d> pose_estimate_2d =
-     ScanMatch(time, pose_prediction, filtered_gravity_aligned_point_cloud);
-  if (pose_estimate_2d == nullptr) {
-    LOG(WARNING) << "Scan matching failed.";
-   return nullptr;
- }
-
+  std::unique_ptr<transform::Rigid2d> pose_estimate_2d = absl::make_unique<transform::Rigid2d>(pose_prediction);
+//      ScanMatch(time, pose_prediction, filtered_gravity_aligned_point_cloud);
+//  if (pose_estimate_2d == nullptr) {
+//    LOG(WARNING) << "Scan matching failed.";
+//    return nullptr;
+//  }
   const transform::Rigid3d pose_estimate =
       transform::Embed3D(*pose_estimate_2d) * gravity_alignment;
-  extrapolator_->AddPose(time, pose_estimate);
+  //extrapolator_->AddPose(time, pose_estimate);
 
   sensor::RangeData range_data_in_local =
       TransformRangeData(gravity_aligned_range_data,
@@ -314,6 +319,7 @@ void LocalTrajectoryBuilder2D::AddOdometryData(
     return;
   }
   extrapolator_->AddOdometryData(odometry_data);
+  last_ground_truth_pose_ = odometry_data.pose;
 }
 
 void LocalTrajectoryBuilder2D::InitializeExtrapolator(const common::Time time) {
