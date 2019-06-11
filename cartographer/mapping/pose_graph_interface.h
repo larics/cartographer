@@ -149,9 +149,6 @@ class PoseGraphInterface {
   // Returns the collection of constraints.
   virtual std::vector<Constraint> constraints() const = 0;
 
-  virtual std::map<std::string /* landmark ID */, LandmarkNode>
-  GetLandmarkNodes() const = 0;
-
   // Serializes the constraints and trajectories. If
   // 'include_unfinished_submaps' is set to 'true', unfinished submaps, i.e.
   // submaps that have not yet received all rangefinder data insertions, will
