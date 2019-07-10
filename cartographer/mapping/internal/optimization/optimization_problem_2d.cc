@@ -229,12 +229,16 @@ void OptimizationProblem2D::Solve(
       problem.SetParameterBlockConstant(C_submaps.at(submap_id_data.id).data());
     }
   }
+  bool first_node = true;
   for (const auto& node_id_data : node_data_) {
     const bool frozen =
         frozen_trajectories.count(node_id_data.id.trajectory_id) != 0;
     C_nodes.Insert(node_id_data.id, FromPose(node_id_data.data.global_pose_2d));
     problem.AddParameterBlock(C_nodes.at(node_id_data.id).data(), 3);
-    if (frozen) {
+    if (first_node || frozen) {
+      first_node = false;
+      // Fix the pose of the first trajectory node or all nodes of a frozen
+      // trajectory.
       problem.SetParameterBlockConstant(C_nodes.at(node_id_data.id).data());
     }
   }

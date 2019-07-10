@@ -319,16 +319,33 @@ void OptimizationProblem3D::Solve(
           C_submaps.at(submap_id_data.id).translation());
     }
   }
+  bool first_node = true;
   for (const auto& node_id_data : node_data_) {
     const bool frozen =
         frozen_trajectories.count(node_id_data.id.trajectory_id) != 0;
-    C_nodes.Insert(
-        node_id_data.id,
-        CeresPose(node_id_data.data.global_pose, translation_parameterization(),
-                  absl::make_unique<ceres::QuaternionParameterization>(),
-                  &problem));
+    if (first_node) {
+      first_node = false;
+      // Fix the first node of the first trajectory except for allowing
+      // gravity alignment.
+      C_nodes.Insert(
+          node_id_data.id,
+          CeresPose(node_id_data.data.global_pose,
+                    translation_parameterization(),
+                    absl::make_unique<ceres::AutoDiffLocalParameterization<
+                        ConstantYawQuaternionPlus, 4, 2>>(),
+                    &problem));
+      problem.SetParameterBlockConstant(
+          C_nodes.at(node_id_data.id).translation());
+    } else {
+      C_nodes.Insert(
+          node_id_data.id,
+          CeresPose(node_id_data.data.global_pose, translation_parameterization(),
+                    absl::make_unique<ceres::QuaternionParameterization>(),
+                    &problem));
+    }
     if (frozen) {
-      problem.SetParameterBlockConstant(C_nodes.at(node_id_data.id).rotation());
+      problem.SetParameterBlockConstant(
+          C_nodes.at(node_id_data.id).rotation());
       problem.SetParameterBlockConstant(
           C_nodes.at(node_id_data.id).translation());
     }
