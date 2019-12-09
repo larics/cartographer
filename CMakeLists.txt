@@ -281,6 +281,7 @@ set(TARGET_COMPILE_FLAGS "${TARGET_COMPILE_FLAGS} ${GOOG_CXX_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES
   COMPILE_FLAGS ${TARGET_COMPILE_FLAGS})
 
+if(FALSE)
 set(TEST_LIB
   cartographer_test_library
 )
@@ -314,6 +315,7 @@ foreach(ABS_FIL ${ALL_TESTS})
   endif()
   target_link_libraries("${TEST_TARGET_NAME}" PUBLIC ${TEST_LIB})
 endforeach()
+endif()
 
 # Add the binary directory first, so that port.h is included after it has
 # been generated.
