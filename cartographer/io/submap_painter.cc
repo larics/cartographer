@@ -206,9 +206,11 @@ UniqueCairoSurfacePtr DrawTexture(const std::vector<char>& intensity,
     // We use the red channel to track intensity information. The green
     // channel we use to track if a cell was ever observed.
     const uint8_t intensity_value = intensity.at(i);
-    const uint8_t alpha_value = alpha.at(i);
-    const uint8_t observed =
-        (intensity_value == 0 && alpha_value == 0) ? 0 : 255;
+    uint8_t alpha_value = alpha.at(i);
+    if (alpha_value > 0 && intensity_value == 0) {
+      alpha_value = 255;
+    }
+
     cairo_data->push_back((alpha_value << 24) | (intensity_value << 16) |
                           (observed << 8) | 0);
   }
