@@ -23,6 +23,7 @@
 
 #include "Eigen/Geometry"
 #include "cartographer/common/port.h"
+#include "cartographer/mapping/2d/submap_2d.h"
 #include "cartographer/mapping/3d/hybrid_grid.h"
 #include "cartographer/mapping/3d/range_data_inserter_3d.h"
 #include "cartographer/mapping/id.h"
@@ -74,12 +75,21 @@ class Submap3D : public Submap {
 
   void Finish();
 
+  const std::shared_ptr<const Submap2D>& submap_2d() const {
+    return submap_2d_;
+  }
+
+  void set_submap_2d(std::shared_ptr<const Submap2D> submap_2d) const {
+    submap_2d_ = std::move(submap_2d);
+  }
+
  private:
   void UpdateFromProto(const proto::Submap3D& submap_3d);
 
   std::unique_ptr<HybridGrid> high_resolution_hybrid_grid_;
   std::unique_ptr<HybridGrid> low_resolution_hybrid_grid_;
   Eigen::VectorXf rotational_scan_matcher_histogram_;
+  mutable std::shared_ptr<const Submap2D> submap_2d_;
 };
 
 // The first active submap will be created on the insertion of the first range

@@ -124,6 +124,7 @@ int MapBuilder::AddTrajectoryBuilder(
     if (trajectory_options.has_trajectory_builder_3d_options()) {
       local_trajectory_builder = absl::make_unique<LocalTrajectoryBuilder3D>(
           trajectory_options.trajectory_builder_3d_options(),
+          trajectory_options.trajectory_builder_2d_options(),
           SelectRangeSensorIds(expected_sensor_ids));
     }
     DCHECK(dynamic_cast<PoseGraph3D*>(pose_graph_.get()));

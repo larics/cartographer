@@ -270,8 +270,9 @@ void Submap3D::ToResponseProto(
 
   AddToTextureProto(*high_resolution_hybrid_grid_, global_submap_pose,
                     response->add_textures());
-  AddToTextureProto(*low_resolution_hybrid_grid_, global_submap_pose,
-                    response->add_textures());
+  //AddToTextureProto(*low_resolution_hybrid_grid_, global_submap_pose,
+  //                  response->add_textures());
+  submap_2d_->ToResponseProto(global_submap_pose, response);
 }
 
 void Submap3D::InsertData(const sensor::RangeData& range_data_in_local,

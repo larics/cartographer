@@ -22,12 +22,14 @@
 
 #include "cartographer/common/time.h"
 #include "cartographer/mapping/3d/submap_3d.h"
+#include "cartographer/mapping/2d/submap_2d.h"
 #include "cartographer/mapping/internal/3d/scan_matching/ceres_scan_matcher_3d.h"
 #include "cartographer/mapping/internal/3d/scan_matching/real_time_correlative_scan_matcher_3d.h"
 #include "cartographer/mapping/internal/motion_filter.h"
 #include "cartographer/mapping/internal/range_data_collator.h"
 #include "cartographer/mapping/pose_extrapolator.h"
 #include "cartographer/mapping/proto/3d/local_trajectory_builder_options_3d.pb.h"
+#include "cartographer/mapping/proto/2d/local_trajectory_builder_options_2d.pb.h"
 #include "cartographer/metrics/family_factory.h"
 #include "cartographer/sensor/imu_data.h"
 #include "cartographer/sensor/internal/voxel_filter.h"
@@ -56,6 +58,7 @@ class LocalTrajectoryBuilder3D {
 
   explicit LocalTrajectoryBuilder3D(
       const mapping::proto::LocalTrajectoryBuilderOptions3D& options,
+      const mapping::proto::LocalTrajectoryBuilderOptions2D& options_2d,
       const std::vector<std::string>& expected_range_sensor_ids);
   ~LocalTrajectoryBuilder3D();
 
@@ -97,6 +100,7 @@ class LocalTrajectoryBuilder3D {
 
   const mapping::proto::LocalTrajectoryBuilderOptions3D options_;
   mapping::ActiveSubmaps3D active_submaps_;
+  mapping::ActiveSubmaps2D active_submaps_2d_;
 
   mapping::MotionFilter motion_filter_;
   std::unique_ptr<scan_matching::RealTimeCorrelativeScanMatcher3D>

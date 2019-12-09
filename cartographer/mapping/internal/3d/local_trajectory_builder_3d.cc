@@ -46,9 +46,17 @@ static auto* kScanMatcherResidualAngleMetric = metrics::Histogram::Null();
 
 LocalTrajectoryBuilder3D::LocalTrajectoryBuilder3D(
     const mapping::proto::LocalTrajectoryBuilderOptions3D& options,
+    const mapping::proto::LocalTrajectoryBuilderOptions2D& options_2d,
     const std::vector<std::string>& expected_range_sensor_ids)
     : options_(options),
       active_submaps_(options.submaps_options()),
+      active_submaps_2d_([](
+        const mapping::proto::LocalTrajectoryBuilderOptions3D& options,
+        const mapping::proto::LocalTrajectoryBuilderOptions2D& options_2d) {
+        mapping::proto::LocalTrajectoryBuilderOptions2D new_options_2d(options_2d);
+        new_options_2d.mutable_submaps_options()->set_num_range_data(options.submaps_options().num_range_data());
+        return new_options_2d.submaps_options();
+      }(options, options_2d)),
       motion_filter_(options.motion_filter_options()),
       real_time_correlative_scan_matcher_(
           absl::make_unique<scan_matching::RealTimeCorrelativeScanMatcher3D>(
@@ -365,6 +373,14 @@ LocalTrajectoryBuilder3D::InsertIntoSubmap(
       active_submaps_.InsertData(filtered_range_data_in_local,
                                  local_from_gravity_aligned,
                                  rotational_scan_matcher_histogram_in_gravity);
+  std::vector<std::shared_ptr<const mapping::Submap2D>> insertion_submaps_2d =
+      active_submaps_2d_.InsertRangeData(filtered_range_data_in_local);
+  for (int i = 0; i < insertion_submaps.size(); i++) {
+    auto& submap_3d = insertion_submaps[i];
+    if (submap_3d->submap_2d() == nullptr) {
+      submap_3d->set_submap_2d(std::move(insertion_submaps_2d[i]));
+    }
+  }
   return absl::make_unique<InsertionResult>(
       InsertionResult{std::make_shared<const mapping::TrajectoryNode::Data>(
                           mapping::TrajectoryNode::Data{
