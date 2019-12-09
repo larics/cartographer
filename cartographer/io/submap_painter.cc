@@ -211,6 +211,8 @@ UniqueCairoSurfacePtr DrawTexture(const std::vector<char>& intensity,
       alpha_value = 255;
     }
 
+    const uint8_t observed = 255;
+    //(intensity_value == 0 && alpha_value == 0) ? 0 : 255;
     cairo_data->push_back((alpha_value << 24) | (intensity_value << 16) |
                           (observed << 8) | 0);
   }

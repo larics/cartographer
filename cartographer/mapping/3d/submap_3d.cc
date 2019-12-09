@@ -96,6 +96,12 @@ std::vector<Eigen::Array4i> ExtractVoxelData(
 
     const Eigen::Vector3f cell_center_submap =
         hybrid_grid.GetCenterOfCell(it.GetCellIndex());
+
+    const Eigen::Vector3f cell_center_submap_rotated = transform.rotation() * cell_center_submap;
+    if (cell_center_submap_rotated.z() < 0.7 || cell_center_submap_rotated.z() > 1.7) {
+      continue;
+    }
+
     const Eigen::Vector3f cell_center_global = transform * cell_center_submap;
     const Eigen::Array4i voxel_index_and_probability(
         common::RoundToInt(cell_center_global.x() * resolution_inverse),
