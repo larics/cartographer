@@ -1018,6 +1018,9 @@ void PoseGraph3D::SetInitialTrajectoryPose(const int from_trajectory_id,
 
 transform::Rigid3d PoseGraph3D::GetInterpolatedGlobalTrajectoryPose(
     const int trajectory_id, const common::Time time) const {
+  if (trajectory_id == -1){
+    return transform::Rigid3d{};
+  }
   CHECK_GT(data_.trajectory_nodes.SizeOfTrajectoryOrZero(trajectory_id), 0);
   const auto it = data_.trajectory_nodes.lower_bound(trajectory_id, time);
   if (it == data_.trajectory_nodes.BeginOfTrajectory(trajectory_id)) {
