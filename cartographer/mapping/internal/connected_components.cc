@@ -51,6 +51,9 @@ void ConnectedComponents::Union(const int trajectory_id_a,
 }
 
 int ConnectedComponents::FindSet(const int trajectory_id) {
+  if (trajectory_id == -1){
+      return -1;
+  }
   auto it = forest_.find(trajectory_id);
   CHECK(it != forest_.end());
   if (it->first != it->second) {
