@@ -58,6 +58,10 @@ common::Time PoseExtrapolator::GetLastPoseTime() const {
   return timed_pose_queue_.back().time;
 }
 
+Eigen::Vector3d PoseExtrapolator::getLinearVelocityFromPoses() const {
+  return linear_velocity_from_poses_;
+}
+
 common::Time PoseExtrapolator::GetLastExtrapolatedTime() const {
   if (!extrapolation_imu_tracker_) {
     return common::Time::min();
