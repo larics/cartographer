@@ -55,12 +55,14 @@ class PoseGraphInterface {
 
   struct LandmarkNode {
     struct LandmarkObservation {
+      // TODO(lmark): Add covariance here
       int trajectory_id;
       common::Time time;
       transform::Rigid3d landmark_to_tracking_transform;
       double translation_weight;
       double rotation_weight;
       bool observed_from_tracking;
+      std::array<double, 9UL> position_covariance;
     };
     std::vector<LandmarkObservation> landmark_observations;
     absl::optional<transform::Rigid3d> global_landmark_pose;

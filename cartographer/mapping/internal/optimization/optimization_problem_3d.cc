@@ -127,6 +127,7 @@ void AddLandmarkCostFunctions(
     MapById<NodeId, CeresPose>* C_nodes,
     std::map<std::string, CeresPose>* C_landmarks, ceres::Problem* problem,
     double huber_scale) {
+  // TODO(lmark1): Add position covariance here somewhere...
   for (const auto& landmark_node : landmark_nodes) {
     // Do not use landmarks that were not optimized for localization.
     for (const auto& observation : landmark_node.second.landmark_observations) {

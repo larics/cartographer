@@ -36,6 +36,7 @@ struct LandmarkObservation {
   double rotation_weight;
   // Set to false if the observation was made from the landmark frame.
   bool observed_from_tracking;
+  std::array<double, 9UL> position_covariance;
 };
 
 struct LandmarkData {
