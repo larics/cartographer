@@ -63,7 +63,7 @@ class LandmarkCostFunction3D {
         interpolated_rotation_and_translation = InterpolateNodes3D(
             prev_node_rotation, prev_node_translation, next_node_rotation,
             next_node_translation, interpolation_parameter_);
-    std::array<T, 6> error = ScaleError(
+    std::array<T, 6> error = ScaleErrorWithCovariance(
         observed_from_tracking_
             ? ComputeUnscaledError(
                   landmark_to_tracking_transform_,
@@ -75,7 +75,7 @@ class LandmarkCostFunction3D {
                   landmark_translation,
                   std::get<0>(interpolated_rotation_and_translation).data(),
                   std::get<1>(interpolated_rotation_and_translation).data()),
-        translation_weight_, rotation_weight_);
+        translation_weight_, rotation_weight_, position_covariance_);
     std::copy(std::begin(error), std::end(error), e);
     return true;
   }

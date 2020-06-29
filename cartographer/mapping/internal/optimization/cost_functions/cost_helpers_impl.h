@@ -100,8 +100,22 @@ std::array<T, 6> ScaleError(const std::array<T, 6>& error,
   // clang-format on
 }
 
-//  Eigen implementation of slerp is not compatible with Ceres on all supported
-//  platforms. Our own implementation is used instead.
+template <typename T>
+std::array<T, 6> ScaleErrorWithCovariance(
+    const std::array<T, 6> error, double translation_weight,
+    double rotation_weight, std::array<double, 9> position_covariance) {
+  static constexpr auto east_index = 0;
+  static constexpr auto north_index = 4;
+  static constexpr auto up_index = 8;
+  return {{error[0] * translation_weight * position_covariance[east_index],
+           error[1] * translation_weight * position_covariance[north_index],
+           error[2] * translation_weight * position_covariance[up_index],
+           error[3] * rotation_weight, error[4] * rotation_weight,
+           error[5] * rotation_weight}};
+}
+
+//  Eigen implementation of slerp is not compatible with Ceres on all
+//  supported platforms. Our own implementation is used instead.
 template <typename T>
 std::array<T, 4> SlerpQuaternions(const T* const start, const T* const end,
                                   double factor) {
