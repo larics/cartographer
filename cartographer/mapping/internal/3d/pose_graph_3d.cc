@@ -239,7 +239,7 @@ void PoseGraph3D::AddLandmarkData(int trajectory_id,
                 observation.landmark_to_tracking_transform,
                 observation.translation_weight, observation.rotation_weight,
                 observation.observed_from_tracking,
-                observation.position_covariance});
+                observation.inverse_covariance});
       }
     }
     return WorkItem::Result::kDoNotRunOptimization;

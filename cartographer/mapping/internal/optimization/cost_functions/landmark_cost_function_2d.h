@@ -68,7 +68,7 @@ class LandmarkCostFunction2D {
                                    landmark_rotation, landmark_translation,
                                    std::get<0>(interpolated_rotation_and_translation).data(),
                                    std::get<1>(interpolated_rotation_and_translation).data()),
-        translation_weight_, rotation_weight_, position_covariance_);
+        translation_weight_, rotation_weight_, inverse_covariance_);
     std::copy(std::begin(error), std::end(error), e);
     return true;
   }
@@ -87,7 +87,7 @@ class LandmarkCostFunction2D {
             common::ToSeconds(observation.time - prev_node.time) /
             common::ToSeconds(next_node.time - prev_node.time)),
         observed_from_tracking_(observation.observed_from_tracking),
-        position_covariance_(observation.position_covariance) {}
+        inverse_covariance_(observation.inverse_covariance) {}
 
   const transform::Rigid3d landmark_to_tracking_transform_;
   const Eigen::Quaterniond prev_node_gravity_alignment_;
@@ -96,7 +96,7 @@ class LandmarkCostFunction2D {
   const double rotation_weight_;
   const double interpolation_parameter_;
   const bool observed_from_tracking_;
-  const std::array<double, 9UL> position_covariance_;
+  const std::array<double, 9UL> inverse_covariance_;
 };
 
 }  // namespace optimization
