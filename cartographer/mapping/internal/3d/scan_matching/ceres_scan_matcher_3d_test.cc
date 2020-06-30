@@ -51,6 +51,7 @@ class CeresScanMatcher3DTest : public ::testing::Test {
         return {
           occupied_space_weight_0 = 1.,
           translation_weight = 0.01,
+          translation_weight_z = 0.01,
           rotation_weight = 0.1,
           only_optimize_yaw = false,
           ceres_solver_options = {

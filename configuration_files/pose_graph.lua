@@ -50,6 +50,7 @@ POSE_GRAPH = {
       occupied_space_weight_0 = 5.,
       occupied_space_weight_1 = 30.,
       translation_weight = 10.,
+      translation_weight_z = 10.,
       rotation_weight = 1.,
       only_optimize_yaw = false,
       ceres_solver_options = {
