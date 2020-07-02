@@ -41,6 +41,8 @@ class MapBuilder : public MapBuilderInterface {
   MapBuilder(const MapBuilder &) = delete;
   MapBuilder &operator=(const MapBuilder &) = delete;
 
+  void SetGlobalSlamResultCallback(PoseGraphInterface::GlobalSlamOptimizationCallback new_callback) override;
+
   int AddTrajectoryBuilder(
       const std::set<SensorId> &expected_sensor_ids,
       const proto::TrajectoryBuilderOptions &trajectory_options,
