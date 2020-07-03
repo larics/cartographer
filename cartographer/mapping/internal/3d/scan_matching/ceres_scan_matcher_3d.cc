@@ -50,6 +50,8 @@ proto::CeresScanMatcherOptions3D CreateCeresScanMatcherOptions3D(
   }
   options.set_translation_weight(
       parameter_dictionary->GetDouble("translation_weight"));
+  options.set_translation_weight_z(
+      parameter_dictionary->GetDouble("translation_weight_z"));
   options.set_rotation_weight(
       parameter_dictionary->GetDouble("rotation_weight"));
   options.set_only_optimize_yaw(
@@ -104,7 +106,8 @@ void CeresScanMatcher3D::Match(
   CHECK_GT(options_.translation_weight(), 0.);
   problem.AddResidualBlock(
       TranslationDeltaCostFunctor3D::CreateAutoDiffCostFunction(
-          options_.translation_weight(), target_translation),
+          options_.translation_weight(), options_.translation_weight_z(),
+          target_translation),
       nullptr /* loss function */, ceres_pose.translation());
   CHECK_GT(options_.rotation_weight(), 0.);
   problem.AddResidualBlock(

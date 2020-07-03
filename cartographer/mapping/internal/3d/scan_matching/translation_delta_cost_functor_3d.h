@@ -29,18 +29,20 @@ namespace scan_matching {
 class TranslationDeltaCostFunctor3D {
  public:
   static ceres::CostFunction* CreateAutoDiffCostFunction(
-      const double scaling_factor, const Eigen::Vector3d& target_translation) {
+      const double scaling_factor, const double scaling_factor_z,
+      const Eigen::Vector3d& target_translation) {
     return new ceres::AutoDiffCostFunction<TranslationDeltaCostFunctor3D,
                                            3 /* residuals */,
                                            3 /* translation variables */>(
-        new TranslationDeltaCostFunctor3D(scaling_factor, target_translation));
+        new TranslationDeltaCostFunctor3D(scaling_factor, scaling_factor_z,
+                                          target_translation));
   }
 
   template <typename T>
   bool operator()(const T* const translation, T* residual) const {
     residual[0] = scaling_factor_ * (translation[0] - x_);
     residual[1] = scaling_factor_ * (translation[1] - y_);
-    residual[2] = scaling_factor_ * (translation[2] - z_);
+    residual[2] = scaling_factor_z_ * (translation[2] - z_);
     return true;
   }
 
@@ -48,8 +50,10 @@ class TranslationDeltaCostFunctor3D {
   // Constructs a new TranslationDeltaCostFunctor3D from the given
   // 'target_translation'.
   explicit TranslationDeltaCostFunctor3D(
-      const double scaling_factor, const Eigen::Vector3d& target_translation)
+      const double scaling_factor, const double scaling_factor_z,
+      const Eigen::Vector3d& target_translation)
       : scaling_factor_(scaling_factor),
+        scaling_factor_z_(scaling_factor_z),
         x_(target_translation.x()),
         y_(target_translation.y()),
         z_(target_translation.z()) {}
@@ -59,6 +63,7 @@ class TranslationDeltaCostFunctor3D {
       const TranslationDeltaCostFunctor3D&) = delete;
 
   const double scaling_factor_;
+  const double scaling_factor_z_;
   const double x_;
   const double y_;
   const double z_;

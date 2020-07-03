@@ -63,7 +63,7 @@ class LandmarkCostFunction3D {
         interpolated_rotation_and_translation = InterpolateNodes3D(
             prev_node_rotation, prev_node_translation, next_node_rotation,
             next_node_translation, interpolation_parameter_);
-    std::array<T, 6> error = ScaleError(
+    std::array<T, 6> error = ScaleErrorWithCovariance(
         observed_from_tracking_
             ? ComputeUnscaledError(
                   landmark_to_tracking_transform_,
@@ -75,7 +75,7 @@ class LandmarkCostFunction3D {
                   landmark_translation,
                   std::get<0>(interpolated_rotation_and_translation).data(),
                   std::get<1>(interpolated_rotation_and_translation).data()),
-        translation_weight_, rotation_weight_);
+        translation_weight_, rotation_weight_, inverse_covariance_);
     std::copy(std::begin(error), std::end(error), e);
     return true;
   }
@@ -91,13 +91,15 @@ class LandmarkCostFunction3D {
         interpolation_parameter_(
             common::ToSeconds(observation.time - prev_node.time) /
             common::ToSeconds(next_node.time - prev_node.time)),
-        observed_from_tracking_(observation.observed_from_tracking) {}
+        observed_from_tracking_(observation.observed_from_tracking),
+        inverse_covariance_(observation.inverse_covariance) {}
 
   const transform::Rigid3d landmark_to_tracking_transform_;
   const double translation_weight_;
   const double rotation_weight_;
   const double interpolation_parameter_;
   const bool observed_from_tracking_;
+  const std::array<double, 9UL> inverse_covariance_;
 };
 
 }  // namespace optimization

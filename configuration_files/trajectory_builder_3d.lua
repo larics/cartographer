@@ -44,6 +44,7 @@ TRAJECTORY_BUILDER_3D = {
     occupied_space_weight_0 = 1.,
     occupied_space_weight_1 = 6.,
     translation_weight = 5.,
+    translation_weight_z = 5.,
     rotation_weight = 4e2,
     only_optimize_yaw = false,
     ceres_solver_options = {

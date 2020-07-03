@@ -206,6 +206,9 @@ void SerializeLandmarkNodes(
       observation_proto->set_rotation_weight(observation.rotation_weight);
       observation_proto->set_observed_from_tracking(
           observation.observed_from_tracking);
+      for (const auto& cov : observation.inverse_covariance) {
+        observation_proto->add_inverse_covariance(cov);
+      }
       writer->WriteProto(proto);
     }
   }

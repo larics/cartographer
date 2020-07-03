@@ -61,6 +61,7 @@ class PoseGraphInterface {
       double translation_weight;
       double rotation_weight;
       bool observed_from_tracking;
+      std::array<double, 9UL> inverse_covariance;
     };
     std::vector<LandmarkObservation> landmark_observations;
     absl::optional<transform::Rigid3d> global_landmark_pose;

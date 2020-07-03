@@ -79,6 +79,7 @@ class LocalTrajectoryBuilderTest : public ::testing::Test {
             occupied_space_weight_0 = 5.,
             occupied_space_weight_1 = 20.,
             translation_weight = 0.1,
+            translation_weight_z = 0.1,
             rotation_weight = 0.3,
             only_optimize_yaw = false,
             ceres_solver_options = {
