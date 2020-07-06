@@ -50,6 +50,8 @@ class MapBuilderInterface {
   MapBuilderInterface(const MapBuilderInterface&) = delete;
   MapBuilderInterface& operator=(const MapBuilderInterface&) = delete;
 
+  virtual void SetGlobalSlamResultCallback(PoseGraphInterface::GlobalSlamOptimizationCallback new_callback) = 0;
+
   // Creates a new trajectory builder and returns its index.
   virtual int AddTrajectoryBuilder(
       const std::set<SensorId>& expected_sensor_ids,

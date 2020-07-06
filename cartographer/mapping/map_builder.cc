@@ -189,6 +189,10 @@ void MapBuilder::FinishTrajectory(const int trajectory_id) {
   pose_graph_->FinishTrajectory(trajectory_id);
 }
 
+void MapBuilder::SetGlobalSlamResultCallback(PoseGraphInterface::GlobalSlamOptimizationCallback new_callback){
+  pose_graph_->SetGlobalSlamOptimizationCallback(new_callback);
+}
+
 std::string MapBuilder::SubmapToProto(
     const SubmapId& submap_id, proto::SubmapQuery::Response* const response) {
   if (submap_id.trajectory_id < 0 ||
