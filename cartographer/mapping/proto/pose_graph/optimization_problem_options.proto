@@ -23,6 +23,12 @@ message OptimizationProblemOptions {
   // Scaling parameter for Huber loss function.
   double huber_scale = 1;
 
+  // Scaling parameter for GPS Huber loss function
+  double nav_sat_huber_scale = 2;
+
+  // Enable Huber loss for GPS Landmarks
+  bool enable_nav_sat_huber_loss = 3;
+
   // Scaling parameter for the IMU acceleration term.
   double acceleration_weight = 8;
 
