@@ -82,7 +82,7 @@ void AddLandmarkCostFunctions(
     const MapById<NodeId, NodeSpec2D>& node_data,
     MapById<NodeId, std::array<double, 3>>* C_nodes,
     std::map<std::string, CeresPose>* C_landmarks, ceres::Problem* problem,
-    double huber_scale) {
+    double huber_scale, bool enable_nav_sat_huber_loss) {
   for (const auto& landmark_node : landmark_nodes) {
     for (const auto& observation : landmark_node.second.landmark_observations) {
       const std::string& landmark_id = landmark_node.first;
@@ -131,11 +131,25 @@ void AddLandmarkCostFunctions(
               C_landmarks->at(landmark_id).rotation());
         }
       }
+
+      // Find the minimum inverse covariance value along the diagonal
+      // diagonal indices - 0, 4, 8
+      const std::array<double, 3> inv_cov_diagonal{
+          {observation.inverse_covariance[0], observation.inverse_covariance[4],
+           observation.inverse_covariance[8]}};
+      const auto min_inv_cov =
+          *std::min_element(inv_cov_diagonal.begin(), inv_cov_diagonal.end());
+      const auto weighted_huber_scale =
+          min_inv_cov * observation.translation_weight * huber_scale;
+
       problem->AddResidualBlock(
           LandmarkCostFunction2D::CreateAutoDiffCostFunction(
               observation, prev->data, next->data),
-          new ceres::HuberLoss(huber_scale), prev_node_pose->data(),
-          next_node_pose->data(), C_landmarks->at(landmark_id).rotation(),
+          enable_nav_sat_huber_loss && (landmark_id == "fixed")
+              ? new ceres::HuberLoss(weighted_huber_scale)
+              : nullptr,
+          prev_node_pose->data(), next_node_pose->data(),
+          C_landmarks->at(landmark_id).rotation(),
           C_landmarks->at(landmark_id).translation());
     }
   }
@@ -222,7 +236,8 @@ void OptimizationProblem2D::Solve(
   std::map<std::string, CeresPose> C_landmarks;
   bool first_submap = true;
   // Only fix the first submap if there are no fixed frame constraints
-  const bool have_fixed_frame_constraints = landmark_nodes.count("fixed") &&
+  const bool have_fixed_frame_constraints =
+      landmark_nodes.count("fixed") &&
       landmark_nodes.at("fixed").landmark_observations.size();
   for (const auto& submap_id_data : submap_data_) {
     const bool frozen =
@@ -258,7 +273,8 @@ void OptimizationProblem2D::Solve(
   }
   // Add cost functions for landmarks.
   AddLandmarkCostFunctions(landmark_nodes, node_data_, &C_nodes, &C_landmarks,
-                           &problem, options_.huber_scale());
+                           &problem, options_.nav_sat_huber_scale(),
+                           options_.enable_nav_sat_huber_loss());
   // Add penalties for violating odometry or changes between consecutive nodes
   // if odometry is not available.
   for (auto node_it = node_data_.begin(); node_it != node_data_.end();) {
