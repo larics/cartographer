@@ -63,7 +63,7 @@ class LandmarkCostFunction3D {
         interpolated_rotation_and_translation = InterpolateNodes3D(
             prev_node_rotation, prev_node_translation, next_node_rotation,
             next_node_translation, interpolation_parameter_);
-    std::array<T, 6> error = ScaleErrorWithCovariance(
+    std::array<T, 6> error =
         observed_from_tracking_
             ? ComputeUnscaledError(
                   landmark_to_tracking_transform_,
@@ -74,8 +74,26 @@ class LandmarkCostFunction3D {
                   landmark_to_tracking_transform_, landmark_rotation,
                   landmark_translation,
                   std::get<0>(interpolated_rotation_and_translation).data(),
-                  std::get<1>(interpolated_rotation_and_translation).data()),
-        translation_weight_, rotation_weight_, inverse_covariance_);
+                  std::get<1>(interpolated_rotation_and_translation).data());
+
+    // Rotate unscaled error to ENU frame
+    const auto interpolated_rotation =
+        std::get<0>(interpolated_rotation_and_translation).data();
+    const Eigen::Quaternion<T> interpolated_quaternion(
+        interpolated_rotation[0], interpolated_rotation[1],
+        interpolated_rotation[2], interpolated_rotation[3]);
+    Eigen::Matrix<T, 3, 1> translation_error{error[0], error[1], error[2]};
+    translation_error = (interpolated_quaternion * translation_error).eval();
+
+    // Assign rotated translation_error to the error array
+    error[0] = translation_error[0];
+    error[1] = translation_error[1];
+    error[2] = translation_error[2];
+
+    // Finally, scale the error
+    error = ScaleErrorWithCovariance(error, translation_weight_,
+                                     rotation_weight_, inverse_covariance_);
+
     std::copy(std::begin(error), std::end(error), e);
     return true;
   }

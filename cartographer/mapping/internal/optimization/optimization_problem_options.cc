@@ -26,6 +26,10 @@ proto::OptimizationProblemOptions CreateOptimizationProblemOptions(
     common::LuaParameterDictionary* const parameter_dictionary) {
   proto::OptimizationProblemOptions options;
   options.set_huber_scale(parameter_dictionary->GetDouble("huber_scale"));
+  options.set_nav_sat_huber_scale(
+      parameter_dictionary->GetDouble("nav_sat_huber_scale"));
+  options.set_enable_nav_sat_huber_loss(
+      parameter_dictionary->GetBool("enable_nav_sat_huber_loss"));
   options.set_acceleration_weight(
       parameter_dictionary->GetDouble("acceleration_weight"));
   options.set_rotation_weight(
