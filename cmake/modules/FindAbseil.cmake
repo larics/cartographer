@@ -16,7 +16,7 @@ cmake_minimum_required(VERSION 3.2)
 
 set(ABSEIL_LIBRARIES absl::synchronization absl::optional absl::hash)
 
-include(${CMAKE_CURRENT_LIST_DIR}/FetchContent.cmake)
+include(FetchContent)
 FetchContent_Declare(abseil
   GIT_REPOSITORY   https://github.com/abseil/abseil-cpp.git
   GIT_TAG          5441bbe1db5d0f2ca24b5b60166367b0966790af
