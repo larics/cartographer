@@ -38,6 +38,7 @@ TEST(LandmarkCostFunction3DTest, SmokeTest) {
   prev_node.time = common::FromUniversal(0);
   NodeSpec3D next_node;
   next_node.time = common::FromUniversal(10);
+  std::array<double, 9UL> inverse_covariance_weight{{1, 0, 0, 0, 1, 0, 0, 0, 1}};
 
   std::unique_ptr<ceres::CostFunction> cost_function_observation_from_tracking(
       LandmarkCostFunction3D::CreateAutoDiffCostFunction(
@@ -47,7 +48,8 @@ TEST(LandmarkCostFunction3DTest, SmokeTest) {
               transform::Rigid3d::Translation(Eigen::Vector3d(1., 1., 1.)),
               1. /* translation_weight */,
               2. /* rotation_weight */,
-              true
+              true,
+              inverse_covariance_weight
           },
           prev_node, next_node));
   std::unique_ptr<ceres::CostFunction> cost_function_observation_from_landmark(
@@ -58,7 +60,8 @@ TEST(LandmarkCostFunction3DTest, SmokeTest) {
               transform::Rigid3d::Translation(Eigen::Vector3d(-1., -1., -1.)),
               1. /* translation_weight */,
               2. /* rotation_weight */,
-              false
+              false,
+              inverse_covariance_weight
           },
           prev_node, next_node));
 
