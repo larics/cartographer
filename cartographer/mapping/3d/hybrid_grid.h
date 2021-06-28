@@ -98,6 +98,12 @@ class FlatGrid {
   // default constructed value.
   class Iterator {
    public:
+    using value_type = TValueType;
+    using difference_type = value_type;
+    using pointer = value_type*;
+    using reference = value_type&;
+    using iterator_category = std::random_access_iterator_tag;
+
     Iterator() : current_(nullptr), end_(nullptr) {}
 
     explicit Iterator(const FlatGrid& flat_grid)
@@ -180,6 +186,12 @@ class NestedGrid {
   // default constructed value.
   class Iterator {
    public:
+    using value_type = typename WrappedGrid::ValueType;
+    using difference_type = value_type;
+    using pointer = value_type*;
+    using reference = value_type&;
+    using iterator_category = std::random_access_iterator_tag;
+
     Iterator() : current_(nullptr), end_(nullptr), nested_iterator_() {}
 
     explicit Iterator(const NestedGrid& nested_grid)
@@ -303,6 +315,12 @@ class DynamicGrid {
   // default constructed value.
   class Iterator {
    public:
+    using value_type = typename WrappedGrid::ValueType;
+    using difference_type = value_type;
+    using pointer = value_type*;
+    using reference = value_type&;
+    using iterator_category = std::random_access_iterator_tag;
+
     explicit Iterator(const DynamicGrid& dynamic_grid)
         : bits_(dynamic_grid.bits_),
           current_(dynamic_grid.meta_cells_.data()),
