@@ -121,6 +121,7 @@ class PoseGraph2DTest : public ::testing::Test {
               ceres_scan_matcher_3d = {
                 occupied_space_weight_0 = 20.,
                 translation_weight = 10.,
+                translation_weight_z = 1.,
                 rotation_weight = 1.,
                 only_optimize_yaw = true,
                 ceres_solver_options = {
@@ -145,6 +146,8 @@ class PoseGraph2DTest : public ::testing::Test {
               log_solver_summary = true,
               use_online_imu_extrinsics_in_3d = true,
               fix_z_in_3d = false,
+              nav_sat_huber_scale = 5e2,
+              enable_nav_sat_huber_loss = false,
               ceres_solver_options = {
                 use_nonmonotonic_steps = false,
                 max_num_iterations = 200,
