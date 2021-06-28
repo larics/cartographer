@@ -50,6 +50,8 @@ class OptimizationProblem3DTest : public ::testing::Test {
           fixed_frame_pose_rotation_weight = 1e2,
           log_solver_summary = true,
           use_online_imu_extrinsics_in_3d = true,
+          nav_sat_huber_scale = 5e2,
+          enable_nav_sat_huber_loss = false,
           fix_z_in_3d = false,
           ceres_solver_options = {
             use_nonmonotonic_steps = false,
